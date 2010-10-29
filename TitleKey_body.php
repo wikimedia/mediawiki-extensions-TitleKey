@@ -64,7 +64,6 @@ class TitleKey {
 	// Hook functions....
 
 	static function updateDeleteSetup( $article, $user, $reason ) {
-		global $tkDeleteIds;
 		$title = $article->mTitle->getPrefixedText();
 		self::$deleteIds[$title] = $article->getID();
 		return true;
