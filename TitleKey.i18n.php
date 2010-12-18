@@ -67,9 +67,10 @@ $messages['bcc'] = array(
 /** Belarusian (Taraškievica orthography) (Беларуская (тарашкевіца))
  * @author EugeneZelenko
  * @author Red Winged Duck
+ * @author Wizardist
  */
 $messages['be-tarask'] = array(
-	'titlekey-desc' => 'Праграмная забесьпячэньне для падказак па першых літарах назвы ў пошуку',
+	'titlekey-desc' => 'Бэк-энд для пошукавых падказак па першых літарах назвы',
 );
 
 /** Breton (Brezhoneg)
