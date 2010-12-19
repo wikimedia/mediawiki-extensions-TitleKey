@@ -70,7 +70,7 @@ $messages['bcc'] = array(
  * @author Wizardist
  */
 $messages['be-tarask'] = array(
-	'titlekey-desc' => 'Бэк-энд для пошукавых падказак па першых літарах назвы',
+	'titlekey-desc' => 'Праграмная забесьпячэньне для пошукавых падказак па першых літарах назвы',
 );
 
 /** Breton (Brezhoneg)
