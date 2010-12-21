@@ -57,6 +57,13 @@ $messages['az'] = array(
 	'titlekey-desc' => 'Adın ilk hərflərinə görə ipucu axtarış sürgüsü',
 );
 
+/** Bashkir (Башҡорт)
+ * @author Assele
+ */
+$messages['ba'] = array(
+	'titlekey-desc' => 'Исемдең тәүге хәрефтәре буйынса эҙләү тәҡдимдәре ҡоралы',
+);
+
 /** Southern Balochi (بلوچی مکرانی)
  * @author Mostafadaneshvar
  */
