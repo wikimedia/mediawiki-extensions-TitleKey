@@ -57,7 +57,7 @@ $messages['az'] = array(
 	'titlekey-desc' => 'Adın ilk hərflərinə görə ipucu axtarış sürgüsü',
 );
 
-/** Bashkir (Башҡорт)
+/** Bashkir (Башҡортса)
  * @author Assele
  */
 $messages['ba'] = array(
@@ -71,7 +71,7 @@ $messages['bcc'] = array(
 	'titlekey-desc' => 'عنوان پیشوند گردگ پیشنهاد ترینگ',
 );
 
-/** Belarusian (Taraškievica orthography) (Беларуская (тарашкевіца))
+/** Belarusian (Taraškievica orthography) (‪Беларуская (тарашкевіца)‬)
  * @author EugeneZelenko
  * @author Red Winged Duck
  * @author Wizardist
@@ -470,14 +470,14 @@ $messages['sl'] = array(
 	'titlekey-desc' => 'Podpora predlogom iskanja strani po korenu',
 );
 
-/** Serbian Cyrillic ekavian (Српски (ћирилица))
+/** Serbian Cyrillic ekavian (‪Српски (ћирилица)‬)
  * @author Millosh
  */
 $messages['sr-ec'] = array(
 	'titlekey-desc' => 'Позадинска машина за претрагу префикса наслова.',
 );
 
-/** Serbian Latin ekavian (Srpski (latinica))
+/** Serbian Latin ekavian (‪Srpski (latinica)‬)
  * @author Michaello
  */
 $messages['sr-el'] = array(
