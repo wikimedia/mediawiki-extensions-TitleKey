@@ -208,7 +208,7 @@ class TitleKey {
 			array(
 				'tk_page=page_id',
 				'tk_namespace' => $ns,
-				'tk_key LIKE \'' . $dbr->escapeLike( $key ) . '%\'',
+				'tk_key ' . $dbr->buildLike( $key, $dbr->anyString() ),
 			),
 			__METHOD__,
 			array(
