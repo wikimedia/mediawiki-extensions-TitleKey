@@ -108,78 +108,26 @@ class TitleKey {
 	 *
 	 * Status info is sent to stdout.
 	 */
-	static function schemaUpdates( $updater = null ) {
-		if ( $updater === null ) { // < 1.17
-			self::runUpdates( wfGetDB( DB_MASTER ) );
-		} else {
-			$updater->addExtensionUpdate( array( array( __CLASS__, 'addDBtable' ) ) );
-		}
+	public static function schemaUpdates( $updater = null ) {
+		$updater->addExtensionUpdate( array( array( __CLASS__, 'runUpdates' ) ) );
 		return true;
 	}
 
-	public static function addDBtable( $updater ) {
-		self::runUpdates( $updater->getDB() );
-	}
-
-	private static function runUpdates( $db ) {
+	public static function runUpdates( $updater ) {
+		$db = $updater->getDB();
 		if( $db->tableExists( 'titlekey' ) ) {
-			wfOut( "...titlekey table already exists.\n" );
+			$updater->output( "...titlekey table already exists.\n" );
 		} else {
-			wfOut( "Creating titlekey table..." );
+			$updater->output( "Creating titlekey table..." );
 			$sourcefile = $db->getType() == 'postgres' ? '/titlekey.pg.sql' : '/titlekey.sql';
 			$err = $db->sourceFile( dirname( __FILE__ ) . $sourcefile );
 			if( $err !== true ) {
 				throw new MWException( $err );
 			}
 
-			wfOut( "ok.\nPopulating titlekey table...\n" );
-			self::populateKeys();
-		}
-	}
-
-	/**
-	 * (Re)populate the titlekeys table with all page titles,
-	 * optionally starting from a given page id.
-	 *
-	 * Status info is sent to stdout.
-	 *
-	 * @param $start int page_id
-	 */
-	static function populateKeys( $start=0 ) {
-		$dbr = wfGetDB( DB_SLAVE );
-		
-		$maxId = $dbr->selectField( 'page', 'MAX(page_id)', '', __METHOD__ );
-		$chunkSize = 1000;
-		
-		$lastId = 0;
-		for( ; $start <= $maxId; $start += $chunkSize ) {
-			if( $start != 0 ) {
-				echo "... $start...\n";
-			}
-			$result = $dbr->select( 'page',
-				array( 'page_id', 'page_namespace', 'page_title' ),
-				array( 'page_id > ' . intval( $start ) ),
-				__METHOD__,
-				array(
-					'ORDER BY' => 'page_id',
-					'LIMIT' => $chunkSize ) );
-			
-			$titles = array();
-			foreach( $result as $row ) {
-				$titles[$row->page_id] =
-					Title::makeTitle( $row->page_namespace, $row->page_title );
-				$lastId = $row->page_id;
-			}
-			$result->free();
-			
-			self::setBatchKeys( $titles );
-			
-			wfWaitForSlaves( 20 );
-		}
-		if( $lastId ) {
-			echo "... $lastId ok.\n";
-		} else {
-			echo "... no pages.\n";
+			$updater->output( "ok.\n" );
+			$task = $updater->maintenance->runChild( 'RebuildTitleKeys' );
+			$task->execute();
 		}
 	}
 

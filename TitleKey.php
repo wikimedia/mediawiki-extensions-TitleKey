@@ -57,3 +57,4 @@ function efTitleKeySetup() {
 $dir = dirname(__FILE__) . '/';
 $wgExtensionMessagesFiles['TitleKey'] = $dir . 'TitleKey.i18n.php';
 $wgAutoloadClasses['TitleKey'] = $dir . 'TitleKey_body.php';
+$wgAutoloadClasses['RebuildTitleKeys'] = $dir . 'rebuildTitleKeys.php';
