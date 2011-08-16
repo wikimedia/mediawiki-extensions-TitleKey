@@ -15,6 +15,7 @@ class RebuildTitleKeys extends Maintenance {
 	function __construct() {
 		parent::__construct();
 		$this->mDescription = "Rebuilds titlekey table entries for all pages in DB.";
+		$this->mBatchSize = 1000;
 		$this->addOption( 'start', 'Page ID to start from', false, true );
 	}
 
@@ -24,10 +25,9 @@ class RebuildTitleKeys extends Maintenance {
 		$dbr = $this->getDB( DB_SLAVE );
 
 		$maxId = $dbr->selectField( 'page', 'MAX(page_id)', '', __METHOD__ );
-		$chunkSize = 1000;
 		
 		$lastId = 0;
-		for( ; $start <= $maxId; $start += $chunkSize ) {
+		for( ; $start <= $maxId; $start += $this->mBatchSize ) {
 			if( $start != 0 ) {
 				$this->output( "... $start...\n" );
 			}
@@ -37,7 +37,7 @@ class RebuildTitleKeys extends Maintenance {
 				__METHOD__,
 				array(
 					'ORDER BY' => 'page_id',
-					'LIMIT' => $chunkSize ) );
+					'LIMIT' => $this->mBatchSize ) );
 			
 			$titles = array();
 			foreach( $result as $row ) {
@@ -60,4 +60,4 @@ class RebuildTitleKeys extends Maintenance {
 }
 
 $maintClass = 'RebuildTitleKeys';
-require_once( DO_MAINTENANCE );
+require_once( RUN_MAINTENANCE_IF_MAIN );
