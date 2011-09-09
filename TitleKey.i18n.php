@@ -449,6 +449,13 @@ $messages['ru'] = array(
 	'titlekey-desc' => 'Движок поисковых подсказок по первым буквам названия',
 );
 
+/** Rusyn (Русиньскый)
+ * @author Gazeb
+ */
+$messages['rue'] = array(
+	'titlekey-desc' => 'Імлементація нашепкавача глядаючого за початком назвы',
+);
+
 /** Sakha (Саха тыла)
  * @author HalanTul
  */
