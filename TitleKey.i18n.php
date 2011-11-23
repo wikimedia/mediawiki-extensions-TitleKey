@@ -477,14 +477,14 @@ $messages['sl'] = array(
 	'titlekey-desc' => 'Podpora predlogom iskanja strani po korenu',
 );
 
-/** Serbian Cyrillic ekavian (‪Српски (ћирилица)‬)
+/** Serbian (Cyrillic script) (‪Српски (ћирилица)‬)
  * @author Millosh
  */
 $messages['sr-ec'] = array(
 	'titlekey-desc' => 'Позадинска машина за претрагу префикса наслова.',
 );
 
-/** Serbian Latin ekavian (‪Srpski (latinica)‬)
+/** Serbian (Latin script) (‪Srpski (latinica)‬)
  * @author Michaello
  */
 $messages['sr-el'] = array(
