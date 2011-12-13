@@ -24,7 +24,7 @@ $wgExtensionCredits['other'][] = array(
 	'name' => 'TitleKey',
 	'author' => 'Brion Vibber',
 	'descriptionmsg' => 'titlekey-desc',
-	'url' => 'http://www.mediawiki.org/wiki/Extension:TitleKey',
+	'url' => 'https://www.mediawiki.org/wiki/Extension:TitleKey',
 );
 
 // The 'SearchUpdate' hook would be right, but it's called in the
