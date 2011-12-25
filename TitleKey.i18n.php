@@ -389,7 +389,7 @@ $messages['nn'] = array(
 /** Norwegian (bokmål)‬ (‪Norsk (bokmål)‬)
  * @author Jon Harald Søby
  */
-$messages['no'] = array(
+$messages['nb'] = array(
 	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
 );
 
