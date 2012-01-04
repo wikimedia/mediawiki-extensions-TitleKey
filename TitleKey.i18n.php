@@ -22,6 +22,13 @@ $messages['qqq'] = array(
 	'titlekey-desc' => 'Description of the [[mw:Extension:TitleKey|TitleKey extension]], providing a case-insensitive title prefix search plugin',
 );
 
+/** Afrikaans (Afrikaans)
+ * @author පසිඳු කාවින්ද
+ */
+$messages['af'] = array(
+	'titlekey-desc' => 'Titel voorvoegsel soek voorstel backend',
+);
+
 /** Aragonese (Aragonés)
  * @author Juanpabl
  */
@@ -365,6 +372,13 @@ $messages['ms'] = array(
 	'titlekey-desc' => 'Atur cara untuk cadangan gelintar bagi awalan tajuk',
 );
 
+/** Norwegian (bokmål)‬ (‪Norsk (bokmål)‬)
+ * @author Jon Harald Søby
+ */
+$messages['nb'] = array(
+	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
+);
+
 /** Low German (Plattdüütsch)
  * @author Slomox
  */
@@ -383,13 +397,6 @@ $messages['nl'] = array(
  * @author Frokor
  */
 $messages['nn'] = array(
-	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
-);
-
-/** Norwegian (bokmål)‬ (‪Norsk (bokmål)‬)
- * @author Jon Harald Søby
- */
-$messages['nb'] = array(
 	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
 );
 
