@@ -127,7 +127,7 @@ $messages['da'] = array(
  * @author Raimond Spekking
  */
 $messages['de'] = array(
-	'titlekey-desc' => 'Stellt einen Hintergrundprozess für die Titelsuche bereit',
+	'titlekey-desc' => 'Ermöglicht einen Hintergrundprozess für die Titelsuche',
 );
 
 /** Zazaki (Zazaki)
