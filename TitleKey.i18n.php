@@ -84,7 +84,7 @@ $messages['bcc'] = array(
  * @author Wizardist
  */
 $messages['be-tarask'] = array(
-	'titlekey-desc' => 'Праграмная забесьпячэньне для пошукавых падказак па першых літарах назвы',
+	'titlekey-desc' => 'Стварэньне пошукавых падказак па першых літарах назвы',
 );
 
 /** Breton (Brezhoneg)
