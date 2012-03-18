@@ -571,9 +571,10 @@ $messages['yue'] = array(
 /** Simplified Chinese (‪中文(简体)‬)
  * @author PhiLiP
  * @author Shinjiman
+ * @author Yfdyh000
  */
 $messages['zh-hans'] = array(
-	'titlekey-desc' => '标题前缀搜寻建议后台',
+	'titlekey-desc' => '标题前缀搜索建议后端',
 );
 
 /** Traditional Chinese (‪中文(繁體)‬)
