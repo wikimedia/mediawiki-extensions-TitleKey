@@ -17,9 +17,12 @@ $messages['en'] = array(
 
 /** Message documentation (Message documentation)
  * @author Mormegil
+ * @author Purodha
  */
 $messages['qqq'] = array(
-	'titlekey-desc' => 'Description of the [[mw:Extension:TitleKey|TitleKey extension]], providing a case-insensitive title prefix search plugin',
+	'titlekey-desc' => 'Description of the [[mw:Extension:TitleKey|TitleKey extension]], providing a case-insensitive title prefix search plugin. It is shown in [[:Special:Version]].
+
+A "[[:wikipedia:Front and back ends|backend]]" is a system or component that ordinary users don\'t interact with directly and don\'t need to know about, and that is responsible for a distinct task or service - for example, a storage back-end is a generic system for storing data which other applications can use. Possible alternatives for back-end are "system" or "service", or (depending on context and language) even leave it untranslated.',
 );
 
 /** Afrikaans (Afrikaans)
