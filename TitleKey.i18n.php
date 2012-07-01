@@ -32,7 +32,7 @@ $messages['af'] = array(
 	'titlekey-desc' => 'Titel voorvoegsel soek voorstel backend',
 );
 
-/** Aragonese (Aragonés)
+/** Aragonese (aragonés)
  * @author Juanpabl
  */
 $messages['an'] = array(
@@ -81,7 +81,7 @@ $messages['bcc'] = array(
 	'titlekey-desc' => 'عنوان پیشوند گردگ پیشنهاد ترینگ',
 );
 
-/** Belarusian (Taraškievica orthography) (‪Беларуская (тарашкевіца)‬)
+/** Belarusian (Taraškievica orthography) (‪беларуская (тарашкевіца)‬)
  * @author EugeneZelenko
  * @author Red Winged Duck
  * @author Wizardist
@@ -140,7 +140,7 @@ $messages['diq'] = array(
 	'titlekey-desc' => 'pêşniyazê pêşkeşwani, cıgêrayişê prefixê sernameyi',
 );
 
-/** Lower Sorbian (Dolnoserbski)
+/** Lower Sorbian (dolnoserbski)
  * @author Michawiki
  */
 $messages['dsb'] = array(
@@ -212,7 +212,7 @@ $messages['frp'] = array(
 	'titlekey-desc' => 'Mècanismo de consèly de rechèrche per prèfixo de titro.',
 );
 
-/** Galician (Galego)
+/** Galician (galego)
  * @author Toliño
  */
 $messages['gl'] = array(
@@ -254,7 +254,7 @@ $messages['hr'] = array(
 	'titlekey-desc' => 'Daje prijedlog traženja po prefiksu',
 );
 
-/** Upper Sorbian (Hornjoserbsce)
+/** Upper Sorbian (hornjoserbsce)
  * @author Michawiki
  */
 $messages['hsb'] = array(
@@ -459,7 +459,7 @@ $messages['ru'] = array(
 	'titlekey-desc' => 'Движок поисковых подсказок по первым буквам названия',
 );
 
-/** Rusyn (Русиньскый)
+/** Rusyn (русиньскый)
  * @author Gazeb
  */
 $messages['rue'] = array(
