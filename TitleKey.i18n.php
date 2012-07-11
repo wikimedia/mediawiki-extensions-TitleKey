@@ -67,7 +67,7 @@ $messages['az'] = array(
 	'titlekey-desc' => 'Adın ilk hərflərinə görə ipucu axtarış sürgüsü',
 );
 
-/** Bashkir (Башҡортса)
+/** Bashkir (башҡортса)
  * @author Assele
  */
 $messages['ba'] = array(
@@ -104,7 +104,7 @@ $messages['bs'] = array(
 	'titlekey-desc' => 'Pozadinski proces pri traženju po naslovima',
 );
 
-/** Chechen (Нохчийн)
+/** Chechen (нохчийн)
  * @author Sasan700
  */
 $messages['ce'] = array(
@@ -375,9 +375,7 @@ $messages['ms'] = array(
 	'titlekey-desc' => 'Atur cara untuk cadangan gelintar bagi awalan tajuk',
 );
 
-/** Norwegian (bokmål)‬ (‪Norsk (bokmål)‬)
- * @author Jon Harald Søby
- */
+/** Norwegian Bokmål (‪norsk (bokmål)‬) */
 $messages['nb'] = array(
 	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
 );
