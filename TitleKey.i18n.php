@@ -81,7 +81,7 @@ $messages['bcc'] = array(
 	'titlekey-desc' => 'عنوان پیشوند گردگ پیشنهاد ترینگ',
 );
 
-/** Belarusian (Taraškievica orthography) (‪беларуская (тарашкевіца)‬)
+/** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
  * @author EugeneZelenko
  * @author Red Winged Duck
  * @author Wizardist
@@ -375,7 +375,7 @@ $messages['ms'] = array(
 	'titlekey-desc' => 'Atur cara untuk cadangan gelintar bagi awalan tajuk',
 );
 
-/** Norwegian Bokmål (‪norsk (bokmål)‬) */
+/** Norwegian Bokmål (norsk (bokmål)‎) */
 $messages['nb'] = array(
 	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
 );
@@ -394,7 +394,7 @@ $messages['nl'] = array(
 	'titlekey-desc' => 'Backend voor zoeksuggesties voor paginanaamvoorvoegsels',
 );
 
-/** Norwegian Nynorsk (‪norsk (nynorsk)‬)
+/** Norwegian Nynorsk (norsk (nynorsk)‎)
  * @author Frokor
  */
 $messages['nn'] = array(
@@ -485,14 +485,14 @@ $messages['sl'] = array(
 	'titlekey-desc' => 'Podpora predlogom iskanja strani po korenu',
 );
 
-/** Serbian (Cyrillic script) (‪српски (ћирилица)‬)
+/** Serbian (Cyrillic script) (српски (ћирилица)‎)
  * @author Millosh
  */
 $messages['sr-ec'] = array(
 	'titlekey-desc' => 'Позадинска машина за претрагу префикса наслова.',
 );
 
-/** Serbian (Latin script) (‪srpski (latinica)‬)
+/** Serbian (Latin script) (srpski (latinica)‎)
  * @author Michaello
  */
 $messages['sr-el'] = array(
@@ -569,7 +569,7 @@ $messages['yue'] = array(
 	'titlekey-desc' => '標題前綴搵嘢建議背幹',
 );
 
-/** Simplified Chinese (‪中文（简体）‬)
+/** Simplified Chinese (中文（简体）‎)
  * @author PhiLiP
  * @author Shinjiman
  * @author Yfdyh000
@@ -578,7 +578,7 @@ $messages['zh-hans'] = array(
 	'titlekey-desc' => '标题前缀搜索建议后端',
 );
 
-/** Traditional Chinese (‪中文（繁體）‬)
+/** Traditional Chinese (中文（繁體）‎)
  * @author Shinjiman
  */
 $messages['zh-hant'] = array(
