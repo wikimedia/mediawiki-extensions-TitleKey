@@ -375,7 +375,8 @@ $messages['ms'] = array(
 	'titlekey-desc' => 'Atur cara untuk cadangan gelintar bagi awalan tajuk',
 );
 
-/** Norwegian Bokmål (norsk (bokmål)‎) */
+/** Norwegian Bokmål (norsk (bokmål)‎)
+ */
 $messages['nb'] = array(
 	'titlekey-desc' => 'Bakstykke for søk etter tittelprefiks',
 );
@@ -584,4 +585,3 @@ $messages['zh-hans'] = array(
 $messages['zh-hant'] = array(
 	'titlekey-desc' => '標題前綴搜尋建議背幹',
 );
-
