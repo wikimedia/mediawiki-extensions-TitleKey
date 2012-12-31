@@ -472,6 +472,13 @@ $messages['sah'] = array(
 	'titlekey-desc' => 'Көрдүүргэ сатабыллаах буоллун диэн аат бастакы буукубаларыгар эбэн этэн биэрии движога',
 );
 
+/** Sinhala (සිංහල)
+ * @author පසිඳු කාවින්ද
+ */
+$messages['si'] = array(
+	'titlekey-desc' => 'ශිර්ෂ උපසර්ග සෙවුම් යෝජනා backend',
+);
+
 /** Slovak (slovenčina)
  * @author Helix84
  */
