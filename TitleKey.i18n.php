@@ -130,7 +130,7 @@ $messages['da'] = array(
  * @author Raimond Spekking
  */
 $messages['de'] = array(
-	'titlekey-desc' => 'Ermöglicht einen Hintergrundprozess für die Titelsuche',
+	'titlekey-desc' => 'Ermöglicht eine groß- und kleinschreibungsunabhängige Seitennamensuche',
 );
 
 /** Zazaki (Zazaki)
