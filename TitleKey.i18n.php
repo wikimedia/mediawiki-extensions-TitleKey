@@ -587,8 +587,9 @@ $messages['zh-hans'] = array(
 );
 
 /** Traditional Chinese (中文（繁體）‎)
+ * @author Justincheng12345
  * @author Shinjiman
  */
 $messages['zh-hant'] = array(
-	'titlekey-desc' => '標題前綴搜尋建議背幹',
+	'titlekey-desc' => '標題前綴搜尋建議後端',
 );
