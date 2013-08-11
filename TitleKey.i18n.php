@@ -106,9 +106,10 @@ $messages['bs'] = array(
 
 /** Chechen (нохчийн)
  * @author Sasan700
+ * @author Умар
  */
 $messages['ce'] = array(
-	'titlekey-desc' => 'Лохуш цlера дуьххьара элпца дош хьагойтуш болу гlирс',
+	'titlekey-desc' => 'Лохуш цӀера дуьххьара элпаца дош хьагойтуш болу гӀирс',
 );
 
 /** Czech (česky)
