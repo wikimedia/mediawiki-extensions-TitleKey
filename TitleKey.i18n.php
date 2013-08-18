@@ -315,9 +315,10 @@ $messages['ka'] = array(
 
 /** Korean (한국어)
  * @author Kwj2772
+ * @author 아라
  */
 $messages['ko'] = array(
-	'titlekey-desc' => '문서 제목의 접두어로 검색어를 제안',
+	'titlekey-desc' => '백엔드 제목의 접두어로 검색어 제안',
 );
 
 /** Colognian (Ripoarisch)
