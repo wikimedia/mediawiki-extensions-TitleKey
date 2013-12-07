@@ -112,7 +112,7 @@ $messages['ce'] = array(
 	'titlekey-desc' => 'Лохуш цӀера дуьххьара элпаца дош хьагойтуш болу гӀирс',
 );
 
-/** Czech (česky)
+/** Czech (čeština)
  * @author Mormegil
  */
 $messages['cs'] = array(
