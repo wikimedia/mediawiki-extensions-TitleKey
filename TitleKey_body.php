@@ -40,7 +40,7 @@ class TitleKey {
 			$rows[] = array(
 				'tk_page' => $id,
 				'tk_namespace' => $title->getNamespace(),
-				'tk_key' => self::normalizeTitle( $title ),
+				'tk_key' => self::normalize( $title->getText() ),
 			);
 		}
 		$db = wfGetDB( DB_MASTER );
@@ -51,10 +51,6 @@ class TitleKey {
 	
 	
 	// Normalization...
-	static function normalizeTitle( $title ) {
-		return self::normalize( $title->getText() );
-	}
-	
 	static function normalize( $text ) {
 		global $wgContLang;
 		return $wgContLang->caseFold( $text );
