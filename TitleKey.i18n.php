@@ -325,7 +325,7 @@ $messages['ko'] = array(
  * @author Purodha
  */
 $messages['ksh'] = array(
-	'titlekey-desc' => 'Deit em Hengerjrond noh de Aanfäng fun Sigge-Tittele söke un de jefonge Tittele vörschlare.',
+	'titlekey-desc' => 'Deit em Hengerjrond noh de Aanfäng fun Sigge-Tittele söke, öm de jefonge Tittele vörzeschlonn.',
 );
 
 /** Luxembourgish (Lëtzebuergesch)
