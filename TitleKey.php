@@ -54,7 +54,8 @@ function efTitleKeySetup() {
 	$wgHooks['SearchGetNearMatch' ][] = 'TitleKey::searchGetNearMatch';
 }
 
-$dir = dirname(__FILE__) . '/';
+$dir = __DIR__ . '/';
+$wgMessagesDirs['TitleKey'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['TitleKey'] = $dir . 'TitleKey.i18n.php';
 $wgAutoloadClasses['TitleKey'] = $dir . 'TitleKey_body.php';
 $wgAutoloadClasses['RebuildTitleKeys'] = $dir . 'rebuildTitleKeys.php';
