@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Siebrand"
-        ]
-    },
-    "titlekey-desc": "Backend voor zoeksuggesties voor paginanaamvoorvoegsels"
+	"@metadata": {
+		"authors": [
+			"Siebrand"
+		]
+	},
+	"titlekey-desc": "Backend voor zoeksuggesties voor paginanaamvoorvoegsels"
 }

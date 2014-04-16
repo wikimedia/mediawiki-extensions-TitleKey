@@ -1,9 +1,9 @@
 {
-    "@metadata": {
-        "authors": [
-            "Fryed-peach",
-            "JtFuruhata"
-        ]
-    },
-    "titlekey-desc": "ページ名の前方一致インクリメンタル検索を実現する内部機構"
+	"@metadata": {
+		"authors": [
+			"Fryed-peach",
+			"JtFuruhata"
+		]
+	},
+	"titlekey-desc": "ページ名の前方一致インクリメンタル検索を実現する内部機構"
 }

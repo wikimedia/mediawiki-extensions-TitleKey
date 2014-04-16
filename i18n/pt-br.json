@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Eduardo.mps"
-        ]
-    },
-    "titlekey-desc": "Motor de sugestão de pesquisa por prefixo de título"
+	"@metadata": {
+		"authors": [
+			"Eduardo.mps"
+		]
+	},
+	"titlekey-desc": "Motor de sugestão de pesquisa por prefixo de título"
 }

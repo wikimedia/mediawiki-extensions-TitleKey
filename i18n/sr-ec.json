@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Millosh"
-        ]
-    },
-    "titlekey-desc": "Позадинска машина за претрагу префикса наслова."
+	"@metadata": {
+		"authors": [
+			"Millosh"
+		]
+	},
+	"titlekey-desc": "Позадинска машина за претрагу префикса наслова."
 }

@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Cedric31"
-        ]
-    },
-    "titlekey-desc": "Retorn cap a la fin de la suggestion de recèrca d'un prefix de títol"
+	"@metadata": {
+		"authors": [
+			"Cedric31"
+		]
+	},
+	"titlekey-desc": "Retorn cap a la fin de la suggestion de recèrca d'un prefix de títol"
 }

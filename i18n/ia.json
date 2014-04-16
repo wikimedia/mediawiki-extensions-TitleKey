@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "McDutchie"
-        ]
-    },
-    "titlekey-desc": "Mechanismo pro facer suggestiones de recerca per prefixo de titulo"
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"titlekey-desc": "Mechanismo pro facer suggestiones de recerca per prefixo de titulo"
 }

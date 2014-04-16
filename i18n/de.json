@@ -1,9 +1,9 @@
 {
-    "@metadata": {
-        "authors": [
-            "Kghbln",
-            "Raimond Spekking"
-        ]
-    },
-    "titlekey-desc": "Ermöglicht eine groß- und kleinschreibungsunabhängige Seitennamensuche"
+	"@metadata": {
+		"authors": [
+			"Kghbln",
+			"Raimond Spekking"
+		]
+	},
+	"titlekey-desc": "Ermöglicht eine groß- und kleinschreibungsunabhängige Seitennamensuche"
 }
