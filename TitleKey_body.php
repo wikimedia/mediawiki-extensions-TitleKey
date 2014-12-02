@@ -132,13 +132,14 @@ class TitleKey {
 	 * @param string $search term
 	 * @param int $limit max number of items to return
 	 * @param array &$results out param -- list of title strings
+	 * @param int $offset number of items to offset
 	 */
-	static function prefixSearchBackend( $ns, $search, $limit, &$results ) {
-		$results = self::prefixSearch( $ns, $search, $limit );
+	static function prefixSearchBackend( $ns, $search, $limit, &$results, $offset = 0 ) {
+		$results = self::prefixSearch( $ns, $search, $limit, $offset );
 		return false;
 	}
 	
-	static function prefixSearch( $namespaces, $search, $limit ) {
+	static function prefixSearch( $namespaces, $search, $limit, $offset ) {
 		$ns = array_shift( $namespaces ); // support only one namespace
 		if( in_array( NS_MAIN, $namespaces ) )
 			$ns = NS_MAIN; // if searching on many always default to main 
@@ -157,7 +158,10 @@ class TitleKey {
 			__METHOD__,
 			array(
 				'ORDER BY' => 'tk_key',
-				'LIMIT' => $limit ) );
+				'LIMIT' => $limit,
+				'OFFSET' => $offset,
+			)
+		);
 		
 		// Reformat useful data for future printing by JSON engine
 		$srchres = array();
