@@ -2,8 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Justincheng12345",
-			"Shinjiman"
+			"Shinjiman",
+			"Cwlin0416"
 		]
 	},
-	"titlekey-desc": "標題前綴搜尋建議後端"
+	"titlekey-desc": "標題字首搜尋建議後端"
 }
