@@ -118,7 +118,7 @@ class TitleKey {
 			$sourcefile = $db->getType() == 'postgres' ? '/titlekey.pg.sql' : '/titlekey.sql';
 			$err = $db->sourceFile( dirname( __FILE__ ) . $sourcefile );
 			if( $err !== true ) {
-				throw new MWException( $err );
+				throw new Exception( $err );
 			}
 
 			$updater->output( "ok.\n" );
