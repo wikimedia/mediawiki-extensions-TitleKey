@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Brion Vibber"
-        ]
-    },
-    "titlekey-desc": "Title prefix search suggestion backend"
+	"@metadata": {
+		"authors": [
+			"Brion Vibber"
+		]
+	},
+	"titlekey-desc": "Title prefix search suggestion backend"
 }
