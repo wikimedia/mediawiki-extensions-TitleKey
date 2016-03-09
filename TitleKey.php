@@ -19,26 +19,36 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+// Ensure that the script cannot be executed outside of MediaWiki
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( 'This is an extension to MediaWiki and cannot be run standalone.' );
+}
+
+// Register extension with MediaWiki
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'TitleKey',
-	'author' => 'Brion Vibber',
+	'author' => array(
+		'Brion Vibber',
+		'...'
+	),
 	'descriptionmsg' => 'titlekey-desc',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:TitleKey',
+	'license-name' => 'GPL-2.0+'
 );
 
 // The 'SearchUpdate' hook would be right, but it's called in the
 // wrong place and I don't want to rewrite it all just this second.
 
 // Update hooks...
-$wgHooks['ArticleDelete'        ][] = 'TitleKey::updateDeleteSetup';
+$wgHooks['ArticleDelete'][] = 'TitleKey::updateDeleteSetup';
 $wgHooks['ArticleDeleteComplete'][] = 'TitleKey::updateDelete';
 $wgHooks['ArticleInsertComplete'][] = 'TitleKey::updateInsert';
-$wgHooks['ArticleUndelete'      ][] = 'TitleKey::updateUndelete';
-$wgHooks['TitleMoveComplete'    ][] = 'TitleKey::updateMove';
+$wgHooks['ArticleUndelete'][] = 'TitleKey::updateUndelete';
+$wgHooks['TitleMoveComplete'][] = 'TitleKey::updateMove';
 
 // Maintenance hooks...
-$wgHooks['ParserTestTables'          ][] = 'TitleKey::testTables';
+$wgHooks['ParserTestTables'][] = 'TitleKey::testTables';
 $wgHooks['LoadExtensionSchemaUpdates'][] = 'TitleKey::schemaUpdates';
 
 // Search hooks...
@@ -54,8 +64,7 @@ function efTitleKeySetup() {
 	$wgHooks['SearchGetNearMatch' ][] = 'TitleKey::searchGetNearMatch';
 }
 
-$dir = __DIR__ . '/';
 $wgMessagesDirs['TitleKey'] = __DIR__ . '/i18n';
-$wgExtensionMessagesFiles['TitleKey'] = $dir . 'TitleKey.i18n.php';
-$wgAutoloadClasses['TitleKey'] = $dir . 'TitleKey_body.php';
-$wgAutoloadClasses['RebuildTitleKeys'] = $dir . 'rebuildTitleKeys.php';
+$wgExtensionMessagesFiles['TitleKey'] = __DIR__ . '/TitleKey.i18n.php';
+$wgAutoloadClasses['TitleKey'] = __DIR__ . '/TitleKey_body.php';
+$wgAutoloadClasses['RebuildTitleKeys'] = __DIR__ . '/rebuildTitleKeys.php';
