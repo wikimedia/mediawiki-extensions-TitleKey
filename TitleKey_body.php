@@ -21,7 +21,7 @@
 
 class TitleKey {
 	static $deleteIds = array();
-	
+
 	// Active functions...
 	static function deleteKey( $id ) {
 		$db = wfGetDB( DB_MASTER );
@@ -33,7 +33,7 @@ class TitleKey {
 	static function setKey( $id, $title ) {
 		self::setBatchKeys( array( $id => $title ) );
 	}
-	
+
 	static function setBatchKeys( $titles ) {
 		$rows = array();
 		foreach( $titles as $id => $title ) {
@@ -48,8 +48,8 @@ class TitleKey {
 			$rows,
 			__METHOD__ );
 	}
-	
-	
+
+
 	// Normalization...
 	static function normalize( $text ) {
 		global $wgContLang;
@@ -58,6 +58,16 @@ class TitleKey {
 
 
 	// Hook functions....
+
+	// Delay setup to avoid compatibility problems with hook ordering
+	// when coexisting with MWSearch... we want MWSearch to be able to
+	// take over the PrefixSearchBackend hook without disabling the
+	// SearchGetNearMatch hook point.
+	public static function setup() {
+		global $wgHooks;
+		$wgHooks['PrefixSearchBackend'][] = 'TitleKey::prefixSearchBackend';
+		$wgHooks['SearchGetNearMatch' ][] = 'TitleKey::searchGetNearMatch';
+	}
 
 	static function updateDeleteSetup( $article, $user, $reason ) {
 		$title = $article->mTitle->getPrefixedText();
@@ -77,7 +87,7 @@ class TitleKey {
 		self::setKey( $article->getId(), $article->getTitle() );
 		return true;
 	}
-	
+
 	static function updateMove( $from, $to, $user, $fromid, $toid ) {
 		// FIXME
 		self::setKey( $toid, $from );
@@ -96,7 +106,7 @@ class TitleKey {
 		self::setKey( $id, $title );
 		return true;
 	}
-	
+
 	/**
 	 * Apply schema updates as necessary.
 	 * If creating the titlekey table for the first time,
@@ -138,14 +148,14 @@ class TitleKey {
 		$results = self::prefixSearch( $ns, $search, $limit, $offset );
 		return false;
 	}
-	
+
 	static function prefixSearch( $namespaces, $search, $limit, $offset ) {
 		$ns = array_shift( $namespaces ); // support only one namespace
 		if( in_array( NS_MAIN, $namespaces ) )
-			$ns = NS_MAIN; // if searching on many always default to main 
-		
+			$ns = NS_MAIN; // if searching on many always default to main
+
 		$key = self::normalize( $search );
-		
+
 		$dbr = wfGetDB( DB_SLAVE );
 		$result = $dbr->select(
 			array( 'titlekey', 'page' ),
@@ -162,7 +172,7 @@ class TitleKey {
 				'OFFSET' => $offset,
 			)
 		);
-		
+
 		// Reformat useful data for future printing by JSON engine
 		$srchres = array();
 		foreach( $result as $row ) {
@@ -170,10 +180,10 @@ class TitleKey {
 			$srchres[] = $title->getPrefixedText();
 		}
 		$result->free();
-		
+
 		return $srchres;
 	}
-	
+
 	/**
 	 * Find matching titles after the default 'go' search exact match fails.
 	 * This'll let 'mcgee' match 'McGee' etc.
@@ -193,15 +203,15 @@ class TitleKey {
 		// No matches. :(
 		return true;
 	}
-	
+
 	static function exactMatchTitle( $title ) {
 		$ns = $title->getNamespace();
 		return self::exactMatch( $ns, $title->getText() );
 	}
-	
+
 	static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
-		
+
 		$dbr = wfGetDB( DB_SLAVE );
 		$row = $dbr->selectRow(
 			array( 'titlekey', 'page' ),
@@ -212,7 +222,7 @@ class TitleKey {
 				'tk_key' => $key,
 			),
 			__METHOD__ );
-		
+
 		if( $row ) {
 			return Title::makeTitle( $row->page_namespace, $row->page_title );
 		} else {

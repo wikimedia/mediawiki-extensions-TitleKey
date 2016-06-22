@@ -19,52 +19,15 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-// Ensure that the script cannot be executed outside of MediaWiki
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( 'This is an extension to MediaWiki and cannot be run standalone.' );
+if ( function_exists( 'wfLoadExtension' ) ) {
+	wfLoadExtension( 'TitleKey' );
+	// Keep i18n globals so mergeMessageFileList.php doesn't break
+	$wgMessagesDirs['TitleKey'] = __DIR__ . '/i18n';
+	wfWarn(
+		'Deprecated PHP entry point used for TitleKey extension. Please use wfLoadExtension instead, ' .
+		'see https://www.mediawiki.org/wiki/Extension_registration for more details.'
+	);
+	return true;
+} else {
+	die( 'This version of the TitleKey extension requires MediaWiki 1.25+' );
 }
-
-// Register extension with MediaWiki
-$wgExtensionCredits['other'][] = array(
-	'path' => __FILE__,
-	'name' => 'TitleKey',
-	'author' => array(
-		'Brion Vibber',
-		'...'
-	),
-	'descriptionmsg' => 'titlekey-desc',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:TitleKey',
-	'license-name' => 'GPL-2.0+'
-);
-
-// The 'SearchUpdate' hook would be right, but it's called in the
-// wrong place and I don't want to rewrite it all just this second.
-
-// Update hooks...
-$wgHooks['ArticleDelete'][] = 'TitleKey::updateDeleteSetup';
-$wgHooks['ArticleDeleteComplete'][] = 'TitleKey::updateDelete';
-$wgHooks['ArticleInsertComplete'][] = 'TitleKey::updateInsert';
-$wgHooks['ArticleUndelete'][] = 'TitleKey::updateUndelete';
-$wgHooks['TitleMoveComplete'][] = 'TitleKey::updateMove';
-
-// Maintenance hooks...
-$wgHooks['ParserTestTables'][] = 'TitleKey::testTables';
-$wgHooks['LoadExtensionSchemaUpdates'][] = 'TitleKey::schemaUpdates';
-
-// Search hooks...
-// Delay setup to avoid compatibility problems with hook ordering
-// when coexisting with MWSearch... we want MWSearch to be able to
-// take over the PrefixSearchBackend hook without disabling the
-// SearchGetNearMatch hook point.
-$wgExtensionFunctions[] = 'efTitleKeySetup';
-
-function efTitleKeySetup() {
-	global $wgHooks;
-	$wgHooks['PrefixSearchBackend'][] = 'TitleKey::prefixSearchBackend';
-	$wgHooks['SearchGetNearMatch' ][] = 'TitleKey::searchGetNearMatch';
-}
-
-$wgMessagesDirs['TitleKey'] = __DIR__ . '/i18n';
-$wgExtensionMessagesFiles['TitleKey'] = __DIR__ . '/TitleKey.i18n.php';
-$wgAutoloadClasses['TitleKey'] = __DIR__ . '/TitleKey_body.php';
-$wgAutoloadClasses['RebuildTitleKeys'] = __DIR__ . '/rebuildTitleKeys.php';

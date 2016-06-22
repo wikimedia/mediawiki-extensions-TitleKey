@@ -1,0 +1,48 @@
+{
+	"name": "TitleKey",
+	"version": "1.0",
+	"author": [
+		"Brion Vibber",
+		"..."
+	],
+	"license-name": "GPL-2.0+",
+	"url": "https://www.mediawiki.org/wiki/Extension:TitleKey",
+	"descriptionmsg": "titlekey-desc",
+	"type": "other",
+	"MessagesDirs": {
+		"TitleKey": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"TitleKey": "TitleKey_body.php",
+		"RebuildTitleKeys": "rebuildTitleKeys.php"
+	},
+	"ExtensionFunctions": [
+		"TitleKey::setup"
+	],
+	"Hooks": {
+		"ArticleDelete": [
+			"TitleKey::updateDeleteSetup"
+		],
+		"ArticleDeleteComplete": [
+			"TitleKey::updateDelete"
+		],
+		"ArticleInsertComplete": [
+			"TitleKey::updateInsert"
+		],
+		"ArticleUndelete": [
+			"TitleKey::updateUndelete"
+		],
+		"TitleMoveComplete": [
+			"TitleKey::updateMove"
+		],
+		"ParserTestTables": [
+			"TitleKey::testTables"
+		],
+		"LoadExtensionSchemaUpdates": [
+			"TitleKey::schemaUpdates"
+		]
+	},
+	"manifest_version": 1
+}
