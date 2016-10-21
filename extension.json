@@ -34,7 +34,7 @@
 		"ArticleUndelete": [
 			"TitleKey::updateUndelete"
 		],
-		"TitleMoveComplete": [
+		"TitleMoveCompleting": [
 			"TitleKey::updateMove"
 		],
 		"ParserTestTables": [
