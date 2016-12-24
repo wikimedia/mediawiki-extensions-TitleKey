@@ -28,7 +28,7 @@
 		"ArticleDeleteComplete": [
 			"TitleKey::updateDelete"
 		],
-		"ArticleInsertComplete": [
+		"PageContentInsertComplete": [
 			"TitleKey::updateInsert"
 		],
 		"ArticleUndelete": [

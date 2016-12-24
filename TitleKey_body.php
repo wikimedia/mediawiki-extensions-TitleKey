@@ -83,8 +83,21 @@ class TitleKey {
 		return true;
 	}
 
-	static function updateInsert( $article, $user, $text, $summary, $isMinor, $isWatch, $section, $flags, $revision ) {
-		self::setKey( $article->getId(), $article->getTitle() );
+	/**
+	 * @param WikiPage $wikiPage
+	 * @param User $user
+	 * @param Content $content
+	 * @param string $summary
+	 * @param bool $isMinor
+	 * @param $isWatch
+	 * @param $section
+	 * @param $flags
+	 * @param Revision $revision
+	 * @return bool
+	 */
+	static function updateInsert( $wikiPage, $user, $content, $summary, $isMinor, $isWatch,
+		$section, $flags, $revision ) {
+		self::setKey( $wikiPage->getId(), $wikiPage->getTitle() );
 		return true;
 	}
 
