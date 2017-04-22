@@ -129,6 +129,8 @@ class TitleKey {
 	 */
 	public static function schemaUpdates( $updater = null ) {
 		$updater->addExtensionUpdate( array( array( __CLASS__, 'runUpdates' ) ) );
+		require_once __DIR__ . '/rebuildTitleKeys.php';
+		$updater->addPostDatabaseUpdateMaintenance( 'RebuildTitleKeys' );
 		return true;
 	}
 
@@ -145,8 +147,6 @@ class TitleKey {
 			}
 
 			$updater->output( "ok.\n" );
-			$task = $updater->maintenance->runChild( 'RebuildTitleKeys' );
-			$task->execute();
 		}
 	}
 
