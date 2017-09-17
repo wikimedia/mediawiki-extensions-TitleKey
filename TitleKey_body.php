@@ -20,35 +20,39 @@
  */
 
 class TitleKey {
-	static $deleteIds = array();
+	static $deleteIds = [];
 
 	// Active functions...
 	static function deleteKey( $id ) {
-		$db = wfGetDB( DB_MASTER );
-		$db->delete( 'titlekey',
-			array( 'tk_page' => $id ),
-			__METHOD__ );
+		$dbw = wfGetDB( DB_MASTER );
+		$dbw->delete(
+			'titlekey',
+			[ 'tk_page' => $id ],
+			__METHOD__
+		);
 	}
 
 	static function setKey( $id, $title ) {
-		self::setBatchKeys( array( $id => $title ) );
+		self::setBatchKeys( [ $id => $title ] );
 	}
 
 	static function setBatchKeys( $titles ) {
-		$rows = array();
-		foreach( $titles as $id => $title ) {
-			$rows[] = array(
+		$rows = [];
+		foreach ( $titles as $id => $title ) {
+			$rows[] = [
 				'tk_page' => $id,
 				'tk_namespace' => $title->getNamespace(),
 				'tk_key' => self::normalize( $title->getText() ),
-			);
+			];
 		}
-		$db = wfGetDB( DB_MASTER );
-		$db->replace( 'titlekey', array( 'tk_page' ),
+		$dbw = wfGetDB( DB_MASTER );
+		$dbw->replace(
+			'titlekey',
+			[ 'tk_page' ],
 			$rows,
-			__METHOD__ );
+			__METHOD__
+		);
 	}
-
 
 	// Normalization...
 	static function normalize( $text ) {
@@ -66,7 +70,7 @@ class TitleKey {
 	public static function setup() {
 		global $wgHooks;
 		$wgHooks['PrefixSearchBackend'][] = 'TitleKey::prefixSearchBackend';
-		$wgHooks['SearchGetNearMatch' ][] = 'TitleKey::searchGetNearMatch';
+		$wgHooks['SearchGetNearMatch'][] = 'TitleKey::searchGetNearMatch';
 	}
 
 	static function updateDeleteSetup( $article, $user, $reason ) {
@@ -77,7 +81,7 @@ class TitleKey {
 
 	static function updateDelete( $article, $user, $reason ) {
 		$title = $article->mTitle->getPrefixedText();
-		if( isset( self::$deleteIds[$title] ) ) {
+		if ( isset( self::$deleteIds[$title] ) ) {
 			self::deleteKey( self::$deleteIds[$title] );
 		}
 		return true;
@@ -114,7 +118,7 @@ class TitleKey {
 	}
 
 	static function updateUndelete( $title, $isnewid ) {
-		$article = new Article($title);
+		$article = new Article( $title );
 		$id = $article->getID();
 		self::setKey( $id, $title );
 		return true;
@@ -128,7 +132,7 @@ class TitleKey {
 	 * Status info is sent to stdout.
 	 */
 	public static function schemaUpdates( $updater = null ) {
-		$updater->addExtensionUpdate( array( array( __CLASS__, 'runUpdates' ) ) );
+		$updater->addExtensionUpdate( [ [ __CLASS__, 'runUpdates' ] ] );
 		require_once __DIR__ . '/rebuildTitleKeys.php';
 		$updater->addPostDatabaseUpdateMaintenance( 'RebuildTitleKeys' );
 		return true;
@@ -136,13 +140,13 @@ class TitleKey {
 
 	public static function runUpdates( $updater ) {
 		$db = $updater->getDB();
-		if( $db->tableExists( 'titlekey' ) ) {
+		if ( $db->tableExists( 'titlekey' ) ) {
 			$updater->output( "...titlekey table already exists.\n" );
 		} else {
-			$updater->output( "Creating titlekey table..." );
-			$sourcefile = $db->getType() == 'postgres' ? '/titlekey.pg.sql' : '/titlekey.sql';
-			$err = $db->sourceFile( dirname( __FILE__ ) . $sourcefile );
-			if( $err !== true ) {
+			$updater->output( 'Creating titlekey table...' );
+			$sourceFile = $db->getType() == 'postgres' ? '/titlekey.pg.sql' : '/titlekey.sql';
+			$err = $db->sourceFile( __DIR__ . $sourceFile );
+			if ( $err !== true ) {
 				throw new Exception( $err );
 			}
 
@@ -152,6 +156,7 @@ class TitleKey {
 
 	/**
 	 * Override the default OpenSearch backend...
+	 *
 	 * @param string $search term
 	 * @param int $limit max number of items to return
 	 * @param array &$results out param -- list of title strings
@@ -164,31 +169,32 @@ class TitleKey {
 
 	static function prefixSearch( $namespaces, $search, $limit, $offset ) {
 		$ns = array_shift( $namespaces ); // support only one namespace
-		if( in_array( NS_MAIN, $namespaces ) )
+		if ( in_array( NS_MAIN, $namespaces ) ) {
 			$ns = NS_MAIN; // if searching on many always default to main
+		}
 
 		$key = self::normalize( $search );
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$result = $dbr->select(
-			array( 'titlekey', 'page' ),
-			array( 'page_namespace', 'page_title' ),
-			array(
-				'tk_page=page_id',
+			[ 'titlekey', 'page' ],
+			[ 'page_namespace', 'page_title' ],
+			[
+				'tk_page = page_id',
 				'tk_namespace' => $ns,
 				'tk_key ' . $dbr->buildLike( $key, $dbr->anyString() ),
-			),
+			],
 			__METHOD__,
-			array(
+			[
 				'ORDER BY' => 'tk_key',
 				'LIMIT' => $limit,
 				'OFFSET' => $offset,
-			)
+			]
 		);
 
 		// Reformat useful data for future printing by JSON engine
-		$srchres = array();
-		foreach( $result as $row ) {
+		$srchres = [];
+		foreach ( $result as $row ) {
 			$title = Title::makeTitle( $row->page_namespace, $row->page_title );
 			$srchres[] = $title->getPrefixedText();
 		}
@@ -200,14 +206,15 @@ class TitleKey {
 	/**
 	 * Find matching titles after the default 'go' search exact match fails.
 	 * This'll let 'mcgee' match 'McGee' etc.
+	 *
 	 * @param string $term
 	 * @param Title outparam &$title
 	 */
 	static function searchGetNearMatch( $term, &$title ) {
 		$temp = Title::newFromText( $term );
-		if( $temp ) {
+		if ( $temp ) {
 			$match = self::exactMatchTitle( $temp );
-			if( $match ) {
+			if ( $match ) {
 				// Yay!
 				$title = $match;
 				return false;
@@ -225,18 +232,19 @@ class TitleKey {
 	static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$row = $dbr->selectRow(
-			array( 'titlekey', 'page' ),
-			array( 'page_namespace', 'page_title' ),
-			array(
-				'tk_page=page_id',
+			[ 'titlekey', 'page' ],
+			[ 'page_namespace', 'page_title' ],
+			[
+				'tk_page = page_id',
 				'tk_namespace' => $ns,
 				'tk_key' => $key,
-			),
-			__METHOD__ );
+			],
+			__METHOD__
+		);
 
-		if( $row ) {
+		if ( $row ) {
 			return Title::makeTitle( $row->page_namespace, $row->page_title );
 		} else {
 			return null;
