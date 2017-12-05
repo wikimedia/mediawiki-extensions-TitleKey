@@ -1,4 +1,8 @@
 {
-	"@metadata": [],
+	"@metadata": {
+		"authors": [
+			"Jon Harald Søby"
+		]
+	},
 	"titlekey-desc": "Bakstykke for søk etter tittelprefiks"
 }
