@@ -17,6 +17,8 @@ class RebuildTitleKeys extends Maintenance {
 		$this->mDescription = "Rebuilds titlekey table entries for all pages in DB.";
 		$this->setBatchSize( 1000 );
 		$this->addOption( 'start', 'Page ID to start from', false, true );
+
+		$this->requireExtension( 'TitleKey' );
 	}
 
 	function execute() {
