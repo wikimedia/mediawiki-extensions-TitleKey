@@ -60,7 +60,6 @@ class TitleKey {
 		return $wgContLang->caseFold( $text );
 	}
 
-
 	// Hook functions....
 
 	// Delay setup to avoid compatibility problems with hook ordering

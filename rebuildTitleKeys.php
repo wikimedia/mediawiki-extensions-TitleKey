@@ -45,7 +45,7 @@ class RebuildTitleKeys extends Maintenance {
 			);
 
 			$titles = [];
-			foreach( $result as $row ) {
+			foreach ( $result as $row ) {
 				$titles[$row->page_id] =
 					Title::makeTitle( $row->page_namespace, $row->page_title );
 				$lastId = $row->page_id;
