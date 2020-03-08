@@ -132,7 +132,7 @@ class TitleKey {
 	 */
 	public static function schemaUpdates( $updater = null ) {
 		$updater->addExtensionUpdate( [ [ __CLASS__, 'runUpdates' ] ] );
-		require_once __DIR__ . '/rebuildTitleKeys.php';
+		require_once __DIR__ . '/../maintenance/rebuildTitleKeys.php';
 		$updater->addPostDatabaseUpdateMaintenance( 'RebuildTitleKeys' );
 		return true;
 	}
@@ -143,7 +143,7 @@ class TitleKey {
 			$updater->output( "...titlekey table already exists.\n" );
 		} else {
 			$updater->output( 'Creating titlekey table...' );
-			$sourceFile = $db->getType() == 'postgres' ? '/titlekey.pg.sql' : '/titlekey.sql';
+			$sourceFile = $db->getType() == 'postgres' ? '/../sql/titlekey.pg.sql' : '/../sql/titlekey.sql';
 			$err = $db->sourceFile( __DIR__ . $sourceFile );
 			if ( $err !== true ) {
 				throw new Exception( $err );

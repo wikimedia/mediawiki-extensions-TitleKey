@@ -15,8 +15,8 @@
 		]
 	},
 	"AutoloadClasses": {
-		"TitleKey": "TitleKey_body.php",
-		"RebuildTitleKeys": "rebuildTitleKeys.php"
+		"TitleKey": "includes/TitleKey.php",
+		"RebuildTitleKeys": "maintenance/rebuildTitleKeys.php"
 	},
 	"ExtensionFunctions": [
 		"TitleKey::setup"
