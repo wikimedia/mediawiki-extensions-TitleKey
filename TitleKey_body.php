@@ -158,8 +158,8 @@ class TitleKey {
 	 *
 	 * @param string $search term
 	 * @param int $limit max number of items to return
-	 * @param array &$results out param -- list of title strings
-	 * @param int $offset number of items to offset
+	 * @param array $results out param -- list of title strings
+	 * @param int &$offset number of items to offset
 	 */
 	static function prefixSearchBackend( $ns, $search, $limit, &$results, $offset = 0 ) {
 		$results = self::prefixSearch( $ns, $search, $limit, $offset );
