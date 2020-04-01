@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
+		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationPrivate" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationPublic" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamName" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamTag" />
@@ -10,8 +11,6 @@
 		<exclude name="MediaWiki.Usage.DeprecatedGlobalVariables.Deprecated$wgContLang" />
 		<exclude name="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment" />
 		<exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing" />
-		<exclude name="Squiz.Scope.MemberVarScope.Missing" />
-		<exclude name="Squiz.Scope.MethodScope.Missing" />
 	</rule>
 	<file>.</file>
 	<arg name="extensions" value="php,php5,inc"/>

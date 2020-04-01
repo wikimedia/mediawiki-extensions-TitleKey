@@ -12,7 +12,7 @@ if ( !class_exists( 'TitleKey' ) ) {
 }
 
 class RebuildTitleKeys extends Maintenance {
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		$this->addDescription( "Rebuilds titlekey table entries for all pages in DB." );
 		$this->setBatchSize( 1000 );
@@ -21,7 +21,7 @@ class RebuildTitleKeys extends Maintenance {
 		$this->requireExtension( 'TitleKey' );
 	}
 
-	function execute() {
+	public function execute() {
 		$start = $this->getOption( 'start', 0 );
 		$this->output( "Rebuilding titlekey table...\n" );
 		$dbr = $this->getDB( DB_REPLICA );

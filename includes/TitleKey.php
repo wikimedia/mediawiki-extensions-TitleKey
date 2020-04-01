@@ -20,10 +20,10 @@
  */
 
 class TitleKey {
-	static $deleteIds = [];
+	private static $deleteIds = [];
 
 	// Active functions...
-	static function deleteKey( $id ) {
+	private static function deleteKey( $id ) {
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(
 			'titlekey',
@@ -32,11 +32,11 @@ class TitleKey {
 		);
 	}
 
-	static function setKey( $id, $title ) {
+	private static function setKey( $id, $title ) {
 		self::setBatchKeys( [ $id => $title ] );
 	}
 
-	static function setBatchKeys( $titles ) {
+	public static function setBatchKeys( $titles ) {
 		$rows = [];
 		foreach ( $titles as $id => $title ) {
 			$rows[] = [
@@ -55,7 +55,7 @@ class TitleKey {
 	}
 
 	// Normalization...
-	static function normalize( $text ) {
+	private static function normalize( $text ) {
 		global $wgContLang;
 		return $wgContLang->caseFold( $text );
 	}
@@ -72,13 +72,13 @@ class TitleKey {
 		$wgHooks['SearchGetNearMatch'][] = 'TitleKey::searchGetNearMatch';
 	}
 
-	static function updateDeleteSetup( $article, $user, $reason ) {
+	public static function updateDeleteSetup( $article, $user, $reason ) {
 		$title = $article->mTitle->getPrefixedText();
 		self::$deleteIds[$title] = $article->getID();
 		return true;
 	}
 
-	static function updateDelete( $article, $user, $reason ) {
+	public static function updateDelete( $article, $user, $reason ) {
 		$title = $article->mTitle->getPrefixedText();
 		if ( isset( self::$deleteIds[$title] ) ) {
 			self::deleteKey( self::$deleteIds[$title] );
@@ -98,25 +98,25 @@ class TitleKey {
 	 * @param Revision $revision
 	 * @return bool
 	 */
-	static function updateInsert( $wikiPage, $user, $content, $summary, $isMinor, $isWatch,
+	public static function updateInsert( $wikiPage, $user, $content, $summary, $isMinor, $isWatch,
 		$section, $flags, $revision ) {
 		self::setKey( $wikiPage->getId(), $wikiPage->getTitle() );
 		return true;
 	}
 
-	static function updateMove( $from, $to, $user, $fromid, $toid ) {
+	public static function updateMove( $from, $to, $user, $fromid, $toid ) {
 		// FIXME
 		self::setKey( $toid, $from );
 		self::setKey( $fromid, $to );
 		return true;
 	}
 
-	static function testTables( &$tables ) {
+	public static function testTables( &$tables ) {
 		$tables[] = 'titlekey';
 		return true;
 	}
 
-	static function updateUndelete( $title, $isnewid ) {
+	public static function updateUndelete( $title, $isnewid ) {
 		$article = new Article( $title );
 		$id = $article->getID();
 		self::setKey( $id, $title );
@@ -161,12 +161,12 @@ class TitleKey {
 	 * @param array $results out param -- list of title strings
 	 * @param int &$offset number of items to offset
 	 */
-	static function prefixSearchBackend( $ns, $search, $limit, &$results, $offset = 0 ) {
+	public static function prefixSearchBackend( $ns, $search, $limit, &$results, $offset = 0 ) {
 		$results = self::prefixSearch( $ns, $search, $limit, $offset );
 		return false;
 	}
 
-	static function prefixSearch( $namespaces, $search, $limit, $offset ) {
+	private static function prefixSearch( $namespaces, $search, $limit, $offset ) {
 		$ns = array_shift( $namespaces ); // support only one namespace
 		if ( in_array( NS_MAIN, $namespaces ) ) {
 			$ns = NS_MAIN; // if searching on many always default to main
@@ -209,7 +209,7 @@ class TitleKey {
 	 * @param string $term
 	 * @param Title outparam &$title
 	 */
-	static function searchGetNearMatch( $term, &$title ) {
+	public static function searchGetNearMatch( $term, &$title ) {
 		$temp = Title::newFromText( $term );
 		if ( $temp ) {
 			$match = self::exactMatchTitle( $temp );
@@ -223,12 +223,12 @@ class TitleKey {
 		return true;
 	}
 
-	static function exactMatchTitle( $title ) {
+	private static function exactMatchTitle( $title ) {
 		$ns = $title->getNamespace();
 		return self::exactMatch( $ns, $title->getText() );
 	}
 
-	static function exactMatch( $ns, $text ) {
+	private static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
 
 		$dbr = wfGetDB( DB_REPLICA );
