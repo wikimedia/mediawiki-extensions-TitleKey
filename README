@@ -6,7 +6,6 @@ MediaWiki's functionality:
 
 It does not provide complete case-insensitivity for title linking within the wiki.
 
-
 == Database schema ==
 
 A 'titlekey' table is added to the wiki's database, which maintains a case-folded
@@ -20,8 +19,7 @@ and it must be populated for the title match functions to pick up matches.
 
 To enable the extension, add the following line to your LocalSettings.php file:
 
-  include "$IP/extensions/TitleKey/TitleKey.php";
-
+  wfLoadExtension( 'TitleKey' );
 
 You must then create and populate the new database table.
 
@@ -29,11 +27,9 @@ The easiest way to do this is to run MediaWIki's standard updaters:
 
   php maintenance/update.php
 
-
 If you do not have command-line access to your server, you can manually
 apply the titlekey.sql file's commands to your database (check for proper
 table prefix, etc).
-
 
 == Repopulating the titlekey table ==
 
