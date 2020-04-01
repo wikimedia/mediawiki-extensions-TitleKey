@@ -129,14 +129,17 @@ class TitleKey {
 	 * will populate the table with all titles in the page table.
 	 *
 	 * Status info is sent to stdout.
+	 *
+	 * @param DatabaseUpdater $updater
 	 */
-	public static function schemaUpdates( $updater = null ) {
+	public static function schemaUpdates( $updater ) {
 		$updater->addExtensionUpdate( [ [ __CLASS__, 'runUpdates' ] ] );
-		require_once __DIR__ . '/../maintenance/rebuildTitleKeys.php';
 		$updater->addPostDatabaseUpdateMaintenance( 'RebuildTitleKeys' );
-		return true;
 	}
 
+	/**
+	 * @param DatabaseUpdater $updater
+	 */
 	public static function runUpdates( $updater ) {
 		$db = $updater->getDB();
 		if ( $db->tableExists( 'titlekey' ) ) {
