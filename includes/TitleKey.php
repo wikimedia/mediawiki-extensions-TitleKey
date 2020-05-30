@@ -117,8 +117,7 @@ class TitleKey {
 	}
 
 	public static function updateUndelete( $title, $isnewid ) {
-		$article = new Article( $title );
-		$id = $article->getID();
+		$id = WikiPage::factory( $title )->getID();
 		self::setKey( $id, $title );
 		return true;
 	}
