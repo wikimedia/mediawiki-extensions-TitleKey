@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../..';
@@ -25,6 +27,8 @@ class RebuildTitleKeys extends Maintenance {
 		$start = $this->getOption( 'start', 0 );
 		$this->output( "Rebuilding titlekey table...\n" );
 		$dbr = $this->getDB( DB_REPLICA );
+
+		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 
 		$maxId = $dbr->selectField( 'page', 'MAX(page_id)', '', __METHOD__ );
 
@@ -54,7 +58,7 @@ class RebuildTitleKeys extends Maintenance {
 
 			TitleKey::setBatchKeys( $titles );
 
-			wfWaitForSlaves( 20 );
+			$lbFactory->waitForReplication( [ 'ifWritesSince' => 20 ] );
 		}
 
 		if ( $lastId ) {
