@@ -92,9 +92,9 @@ class TitleKey {
 	 * @param Content $content
 	 * @param string $summary
 	 * @param bool $isMinor
-	 * @param $isWatch
-	 * @param $section
-	 * @param $flags
+	 * @param null $isWatch
+	 * @param null $section
+	 * @param int $flags
 	 * @param Revision $revision
 	 * @return bool
 	 */
@@ -158,10 +158,12 @@ class TitleKey {
 	/**
 	 * Override the default OpenSearch backend...
 	 *
+	 * @param int[] $ns
 	 * @param string $search term
 	 * @param int $limit max number of items to return
-	 * @param array $results out param -- list of title strings
-	 * @param int &$offset number of items to offset
+	 * @param array &$results out param -- list of title strings
+	 * @param int $offset number of items to offset
+	 * @return false
 	 */
 	public static function prefixSearchBackend( $ns, $search, $limit, &$results, $offset = 0 ) {
 		$results = self::prefixSearch( $ns, $search, $limit, $offset );
@@ -210,6 +212,7 @@ class TitleKey {
 	 *
 	 * @param string $term
 	 * @param Title outparam &$title
+	 * @return bool
 	 */
 	public static function searchGetNearMatch( $term, &$title ) {
 		$temp = Title::newFromText( $term );
