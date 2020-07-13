@@ -9,6 +9,9 @@
 	"url": "https://www.mediawiki.org/wiki/Extension:TitleKey",
 	"descriptionmsg": "titlekey-desc",
 	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.35.0"
+	},
 	"MessagesDirs": {
 		"TitleKey": [
 			"i18n"
@@ -28,13 +31,13 @@
 		"ArticleDeleteComplete": [
 			"TitleKey::updateDelete"
 		],
-		"PageContentInsertComplete": [
+		"PageSaveComplete": [
 			"TitleKey::updateInsert"
 		],
 		"ArticleUndelete": [
 			"TitleKey::updateUndelete"
 		],
-		"TitleMoveCompleting": [
+		"PageMoveCompleting": [
 			"TitleKey::updateMove"
 		],
 		"ParserTestTables": [

@@ -19,6 +19,9 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+use MediaWiki\Linker\LinkTarget;
+use MediaWiki\User\UserIdentity;
+
 class TitleKey {
 	private static $deleteIds = [];
 
@@ -32,10 +35,13 @@ class TitleKey {
 		);
 	}
 
-	private static function setKey( $id, $title ) {
+	private static function setKey( $id, LinkTarget $title ) {
 		self::setBatchKeys( [ $id => $title ] );
 	}
 
+	/**
+	 * @param LinkTarget[] $titles
+	 */
 	public static function setBatchKeys( $titles ) {
 		$rows = [];
 		foreach ( $titles as $id => $title ) {
@@ -88,23 +94,22 @@ class TitleKey {
 
 	/**
 	 * @param WikiPage $wikiPage
-	 * @param User $user
-	 * @param Content $content
-	 * @param string $summary
-	 * @param bool $isMinor
-	 * @param null $isWatch
-	 * @param null $section
-	 * @param int $flags
-	 * @param Revision $revision
 	 * @return bool
 	 */
-	public static function updateInsert( $wikiPage, $user, $content, $summary, $isMinor, $isWatch,
-		$section, $flags, $revision ) {
+	public static function updateInsert( $wikiPage ) {
 		self::setKey( $wikiPage->getId(), $wikiPage->getTitle() );
 		return true;
 	}
 
-	public static function updateMove( $from, $to, $user, $fromid, $toid ) {
+	/**
+	 * @param LinkTarget $from
+	 * @param LinkTarget $to
+	 * @param UserIdentity $user
+	 * @param int $fromid
+	 * @param int $toid
+	 * @return bool
+	 */
+	public static function updateMove( LinkTarget $from, LinkTarget $to, $user, $fromid, $toid ) {
 		// FIXME
 		self::setKey( $toid, $from );
 		self::setKey( $fromid, $to );
