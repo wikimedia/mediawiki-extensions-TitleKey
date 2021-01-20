@@ -20,12 +20,19 @@
  */
 
 use MediaWiki\Linker\LinkTarget;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserIdentity;
 
 class TitleKey {
+
+	/** @var array */
 	private static $deleteIds = [];
 
-	// Active functions...
+	/**
+	 * Active functions...
+	 *
+	 * @param int $id
+	 */
 	private static function deleteKey( $id ) {
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(
@@ -35,6 +42,10 @@ class TitleKey {
 		);
 	}
 
+	/**
+	 * @param int $id
+	 * @param LinkTarget[] $title
+	 */
 	private static function setKey( $id, LinkTarget $title ) {
 		self::setBatchKeys( [ $id => $title ] );
 	}
@@ -60,30 +71,48 @@ class TitleKey {
 		);
 	}
 
-	// Normalization...
+	/**
+	 * Normalization...
+	 *
+	 * @param string $text
+	 * @return string
+	 */
 	private static function normalize( $text ) {
-		global $wgContLang;
-		return $wgContLang->caseFold( $text );
+		return MediaWikiServices::getInstance()->getContentLanguage()->caseFold( $text );
 	}
 
 	// Hook functions....
 
-	// Delay setup to avoid compatibility problems with hook ordering
-	// when coexisting with MWSearch... we want MWSearch to be able to
-	// take over the PrefixSearchBackend hook without disabling the
-	// SearchGetNearMatch hook point.
+	/**
+	 * Delay setup to avoid compatibility problems with hook ordering
+	 * when coexisting with MWSearch... we want MWSearch to be able to
+	 * take over the PrefixSearchBackend hook without disabling the
+	 * SearchGetNearMatch hook point.
+	 */
 	public static function setup() {
 		global $wgHooks;
 		$wgHooks['PrefixSearchBackend'][] = 'TitleKey::prefixSearchBackend';
 		$wgHooks['SearchGetNearMatch'][] = 'TitleKey::searchGetNearMatch';
 	}
 
+	/**
+	 * @param Article $article
+	 * @param User $user
+	 * @param string $reason
+	 * @return bool
+	 */
 	public static function updateDeleteSetup( $article, $user, $reason ) {
 		$title = $article->mTitle->getPrefixedText();
 		self::$deleteIds[$title] = $article->getID();
 		return true;
 	}
 
+	/**
+	 * @param Article $article
+	 * @param User $user
+	 * @param string $reason
+	 * @return bool
+	 */
 	public static function updateDelete( $article, $user, $reason ) {
 		$title = $article->mTitle->getPrefixedText();
 		if ( isset( self::$deleteIds[$title] ) ) {
@@ -116,11 +145,20 @@ class TitleKey {
 		return true;
 	}
 
+	/**
+	 * @param array &$tables
+	 * @return bool
+	 */
 	public static function testTables( &$tables ) {
 		$tables[] = 'titlekey';
 		return true;
 	}
 
+	/**
+	 * @param Title $title
+	 * @param int $isnewid
+	 * @return bool
+	 */
 	public static function updateUndelete( $title, $isnewid ) {
 		$id = WikiPage::factory( $title )->getID();
 		self::setKey( $id, $title );
@@ -175,10 +213,19 @@ class TitleKey {
 		return false;
 	}
 
+	/**
+	 * @param array $namespaces
+	 * @param string $search
+	 * @param int $limit
+	 * @param int $offset
+	 * @return string
+	 */
 	private static function prefixSearch( $namespaces, $search, $limit, $offset ) {
-		$ns = array_shift( $namespaces ); // support only one namespace
+		// support only one namespace
+		$ns = array_shift( $namespaces );
 		if ( in_array( NS_MAIN, $namespaces ) ) {
-			$ns = NS_MAIN; // if searching on many always default to main
+			// if searching on many always default to main
+			$ns = NS_MAIN;
 		}
 
 		$key = self::normalize( $search );
@@ -233,11 +280,20 @@ class TitleKey {
 		return true;
 	}
 
+	/**
+	 * @param Title $title
+	 * @return Title|null
+	 */
 	private static function exactMatchTitle( $title ) {
 		$ns = $title->getNamespace();
 		return self::exactMatch( $ns, $title->getText() );
 	}
 
+	/**
+	 * @param array $ns
+	 * @param string $text
+	 * @return Title|null
+	 */
 	private static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
 
