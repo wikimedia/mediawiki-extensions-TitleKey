@@ -34,7 +34,7 @@ class TitleKey {
 	 * @param int $id
 	 */
 	private static function deleteKey( $id ) {
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->delete(
 			'titlekey',
 			[ 'tk_page' => $id ],
@@ -62,7 +62,7 @@ class TitleKey {
 				'tk_key' => self::normalize( $title->getText() ),
 			];
 		}
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->replace(
 			'titlekey',
 			[ 'tk_page' ],
