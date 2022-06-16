@@ -176,7 +176,7 @@ class TitleKey {
 	 */
 	public static function schemaUpdates( $updater ) {
 		$updater->addExtensionUpdate( [ [ __CLASS__, 'runUpdates' ] ] );
-		$updater->addPostDatabaseUpdateMaintenance( 'RebuildTitleKeys' );
+		$updater->addPostDatabaseUpdateMaintenance( RebuildTitleKeys::class );
 	}
 
 	/**

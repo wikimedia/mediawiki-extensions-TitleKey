@@ -8,11 +8,6 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 
-// In case we want to do offline initialization...
-if ( !class_exists( 'TitleKey' ) ) {
-	require __DIR__ . '/../includes/TitleKey.php';
-}
-
 class RebuildTitleKeys extends Maintenance {
 	public function __construct() {
 		parent::__construct();
@@ -69,5 +64,5 @@ class RebuildTitleKeys extends Maintenance {
 	}
 }
 
-$maintClass = 'RebuildTitleKeys';
+$maintClass = RebuildTitleKeys::class;
 require_once RUN_MAINTENANCE_IF_MAIN;
