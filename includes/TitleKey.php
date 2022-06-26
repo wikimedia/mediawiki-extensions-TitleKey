@@ -160,7 +160,12 @@ class TitleKey {
 	 * @return bool
 	 */
 	public static function updateUndelete( $title, $isnewid ) {
-		$id = WikiPage::factory( $title )->getID();
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			// MW 1.36+
+			$id = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getID();
+		} else {
+			$id = WikiPage::factory( $title )->getID();
+		}
 		self::setKey( $id, $title );
 		return true;
 	}
