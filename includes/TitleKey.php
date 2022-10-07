@@ -102,7 +102,7 @@ class TitleKey {
 	 * @return bool
 	 */
 	public static function updateDeleteSetup( $article, $user, $reason ) {
-		$title = $article->mTitle->getPrefixedText();
+		$title = $article->getTitle()->getPrefixedText();
 		self::$deleteIds[$title] = $article->getID();
 		return true;
 	}
@@ -114,7 +114,7 @@ class TitleKey {
 	 * @return bool
 	 */
 	public static function updateDelete( $article, $user, $reason ) {
-		$title = $article->mTitle->getPrefixedText();
+		$title = $article->getTitle()->getPrefixedText();
 		if ( isset( self::$deleteIds[$title] ) ) {
 			self::deleteKey( self::$deleteIds[$title] );
 		}
