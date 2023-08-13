@@ -90,9 +90,9 @@ class TitleKey {
 	 * SearchGetNearMatch hook point.
 	 */
 	public static function setup() {
-		global $wgHooks;
-		$wgHooks['PrefixSearchBackend'][] = 'TitleKey::prefixSearchBackend';
-		$wgHooks['SearchGetNearMatch'][] = 'TitleKey::searchGetNearMatch';
+		$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
+		$hookContainer->register( 'PrefixSearchBackend', 'TitleKey::prefixSearchBackend' );
+		$hookContainer->register( 'SearchGetNearMatch', 'TitleKey::searchGetNearMatch' );
 	}
 
 	/**
