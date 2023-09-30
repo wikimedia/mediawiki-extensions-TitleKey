@@ -146,15 +146,6 @@ class TitleKey {
 	}
 
 	/**
-	 * @param array &$tables
-	 * @return bool
-	 */
-	public static function testTables( &$tables ) {
-		$tables[] = 'titlekey';
-		return true;
-	}
-
-	/**
 	 * @param Title $title
 	 * @param int $isnewid
 	 * @return bool

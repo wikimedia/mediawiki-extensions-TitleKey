@@ -10,7 +10,7 @@
 	"descriptionmsg": "titlekey-desc",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.35.3"
+		"MediaWiki": ">= 1.36"
 	},
 	"MessagesDirs": {
 		"TitleKey": [
@@ -39,9 +39,6 @@
 		],
 		"PageMoveCompleting": [
 			"TitleKey::updateMove"
-		],
-		"ParserTestTables": [
-			"TitleKey::testTables"
 		],
 		"LoadExtensionSchemaUpdates": [
 			"TitleKey::schemaUpdates"
