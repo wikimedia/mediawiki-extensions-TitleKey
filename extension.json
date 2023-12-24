@@ -10,7 +10,7 @@
 	"descriptionmsg": "titlekey-desc",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.36"
+		"MediaWiki": ">= 1.39"
 	},
 	"MessagesDirs": {
 		"TitleKey": [
@@ -18,31 +18,38 @@
 		]
 	},
 	"AutoloadClasses": {
-		"TitleKey": "includes/TitleKey.php",
 		"RebuildTitleKeys": "maintenance/rebuildTitleKeys.php"
 	},
-	"ExtensionFunctions": [
-		"TitleKey::setup"
-	],
-	"Hooks": {
-		"ArticleDelete": [
-			"TitleKey::updateDeleteSetup"
-		],
-		"ArticleDeleteComplete": [
-			"TitleKey::updateDelete"
-		],
-		"PageSaveComplete": [
-			"TitleKey::updateInsert"
-		],
-		"ArticleUndelete": [
-			"TitleKey::updateUndelete"
-		],
-		"PageMoveCompleting": [
-			"TitleKey::updateMove"
-		],
-		"LoadExtensionSchemaUpdates": [
-			"TitleKey::schemaUpdates"
-		]
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\TitleKey\\": "includes/"
 	},
-	"manifest_version": 1
+	"ExtensionFunctions": [
+		"MediaWiki\\Extension\\TitleKey\\TitleKey::setup"
+	],
+	"HookHandlers": {
+		"TitleKeyHooks": {
+			"class": "MediaWiki\\Extension\\TitleKey\\TitleKey"
+		}
+	},
+	"Hooks": {
+		"ArticleDelete": {
+			"handler": "TitleKeyHooks"
+		},
+		"ArticleDeleteComplete": {
+			"handler": "TitleKeyHooks"
+		},
+		"PageSaveComplete": {
+			"handler": "TitleKeyHooks"
+		},
+		"ArticleUndelete": {
+			"handler": "TitleKeyHooks"
+		},
+		"PageMoveCompleting": {
+			"handler": "TitleKeyHooks"
+		},
+		"LoadExtensionSchemaUpdates": {
+			"handler": "TitleKeyHooks"
+		}
+	},
+	"manifest_version": 2
 }

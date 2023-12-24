@@ -21,9 +21,12 @@ To enable the extension, add the following line to your LocalSettings.php file:
 
   wfLoadExtension( 'TitleKey' );
 
+
+ * Set $wgSearchType to 'MediaWiki\\Extension\\TitleKey\\SearchEngine'
+
 You must then create and populate the new database table.
 
-The easiest way to do this is to run MediaWIki's standard updaters:
+The easiest way to do this is to run MediaWiki's standard updaters:
 
   php maintenance/update.php
 
@@ -33,5 +36,5 @@ table prefix, etc).
 
 == Repopulating the titlekey table ==
 
-The titlekey table can be repopulated by hand by running the rebuildTitleKeys.php
+The titlekey table can be repopulated by hand by running the maintenance/rebuildTitleKeys.php
 command-line script.
