@@ -19,11 +19,36 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace MediaWiki\Extension\TitleKey;
+
+use Content;
+use DatabaseUpdater;
+use ManualLogEntry;
+use MediaWiki\Hook\PageMoveCompletingHook;
+use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Page\Hook\ArticleDeleteCompleteHook;
+use MediaWiki\Page\Hook\ArticleDeleteHook;
+use MediaWiki\Page\Hook\ArticleUndeleteHook;
+use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Status\Status;
+use MediaWiki\Storage\EditResult;
+use MediaWiki\Storage\Hook\PageSaveCompleteHook;
+use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
+use RebuildTitleKeys;
+use WikiPage;
 
-class TitleKey {
+class TitleKey implements
+	ArticleDeleteHook,
+	ArticleDeleteCompleteHook,
+	PageSaveCompleteHook,
+	ArticleUndeleteHook,
+	PageMoveCompletingHook,
+	LoadExtensionSchemaUpdatesHook
+{
 
 	/** @var array */
 	private static $deleteIds = [];
@@ -34,7 +59,7 @@ class TitleKey {
 	 * @param int $id
 	 */
 	private static function deleteKey( $id ) {
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$dbw->delete(
 			'titlekey',
 			[ 'tk_page' => $id ],
@@ -44,7 +69,7 @@ class TitleKey {
 
 	/**
 	 * @param int $id
-	 * @param LinkTarget[] $title
+	 * @param LinkTarget $title
 	 */
 	private static function setKey( $id, LinkTarget $title ) {
 		self::setBatchKeys( [ $id => $title ] );
@@ -62,7 +87,7 @@ class TitleKey {
 				'tk_key' => self::normalize( $title->getText() ),
 			];
 		}
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$dbw->replace(
 			'titlekey',
 			[ 'tk_page' ],
@@ -91,30 +116,51 @@ class TitleKey {
 	 */
 	public static function setup() {
 		$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
-		$hookContainer->register( 'PrefixSearchBackend', 'TitleKey::prefixSearchBackend' );
-		$hookContainer->register( 'SearchGetNearMatch', 'TitleKey::searchGetNearMatch' );
+		$hookContainer->register( 'SearchGetNearMatch', [ self::class, 'searchGetNearMatch' ] );
 	}
 
 	/**
-	 * @param Article $article
+	 * @param WikiPage $wikiPage
 	 * @param User $user
-	 * @param string $reason
+	 * @param string &$reason
+	 * @param string &$error
+	 * @param Status &$status
+	 * @param bool $suppress
 	 * @return bool
 	 */
-	public static function updateDeleteSetup( $article, $user, $reason ) {
-		$title = $article->getTitle()->getPrefixedText();
-		self::$deleteIds[$title] = $article->getID();
+	public function onArticleDelete(
+		WikiPage $wikiPage,
+		User $user,
+		&$reason,
+		&$error,
+		Status &$status,
+		$suppress
+	) {
+		$title = $wikiPage->getTitle()->getPrefixedText();
+		self::$deleteIds[$title] = $wikiPage->getID();
 		return true;
 	}
 
 	/**
-	 * @param Article $article
+	 * @param WikiPage $wikiPage
 	 * @param User $user
 	 * @param string $reason
+	 * @param int $id
+	 * @param Content|null $content
+	 * @param ManualLogEntry $logEntry
+	 * @param int $archivedRevisionCount
 	 * @return bool
 	 */
-	public static function updateDelete( $article, $user, $reason ) {
-		$title = $article->getTitle()->getPrefixedText();
+	public function onArticleDeleteComplete(
+		$wikiPage,
+		$user,
+		$reason,
+		$id,
+		$content,
+		$logEntry,
+		$archivedRevisionCount
+	) {
+		$title = $wikiPage->getTitle()->getPrefixedText();
 		if ( isset( self::$deleteIds[$title] ) ) {
 			self::deleteKey( self::$deleteIds[$title] );
 		}
@@ -123,40 +169,44 @@ class TitleKey {
 
 	/**
 	 * @param WikiPage $wikiPage
-	 * @return bool
+	 * @param UserIdentity $user
+	 * @param string $summary
+	 * @param int $flags
+	 * @param RevisionRecord $revisionRecord
+	 * @param EditResult $editResult
+	 * @return bool|void
 	 */
-	public static function updateInsert( $wikiPage ) {
+	public function onPageSaveComplete( $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult ) {
 		self::setKey( $wikiPage->getId(), $wikiPage->getTitle() );
 		return true;
 	}
 
 	/**
-	 * @param LinkTarget $from
-	 * @param LinkTarget $to
+	 * @param LinkTarget $old
+	 * @param LinkTarget $new
 	 * @param UserIdentity $user
-	 * @param int $fromid
-	 * @param int $toid
+	 * @param int $pageid
+	 * @param int $redirid
+	 * @param string $reason
+	 * @param RevisionRecord $revision
 	 * @return bool
 	 */
-	public static function updateMove( LinkTarget $from, LinkTarget $to, $user, $fromid, $toid ) {
-		// FIXME
-		self::setKey( $toid, $from );
-		self::setKey( $fromid, $to );
+	public function onPageMoveCompleting( $old, $new, $user, $pageid, $redirid, $reason, $revision ) {
+		self::setKey( $pageid, $old );
+		self::setKey( $redirid, $new );
 		return true;
 	}
 
 	/**
 	 * @param Title $title
-	 * @param int $isnewid
+	 * @param bool $create
+	 * @param string $comment
+	 * @param int $oldPageId
+	 * @param array $restoredPages
 	 * @return bool
 	 */
-	public static function updateUndelete( $title, $isnewid ) {
-		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
-			// MW 1.36+
-			$id = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getID();
-		} else {
-			$id = WikiPage::factory( $title )->getID();
-		}
+	public function onArticleUndelete( $title, $create, $comment, $oldPageId, $restoredPages ) {
+		$id = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getID();
 		self::setKey( $id, $title );
 		return true;
 	}
@@ -170,43 +220,14 @@ class TitleKey {
 	 *
 	 * @param DatabaseUpdater $updater
 	 */
-	public static function schemaUpdates( $updater ) {
-		$updater->addExtensionUpdate( [ [ __CLASS__, 'runUpdates' ] ] );
-		$updater->addPostDatabaseUpdateMaintenance( RebuildTitleKeys::class );
-	}
-
-	/**
-	 * @param DatabaseUpdater $updater
-	 */
-	public static function runUpdates( $updater ) {
+	public function onLoadExtensionSchemaUpdates( $updater ) {
 		$db = $updater->getDB();
-		if ( $db->tableExists( 'titlekey' ) ) {
-			$updater->output( "...titlekey table already exists.\n" );
-		} else {
-			$updater->output( 'Creating titlekey table...' );
-			$sourceFile = $db->getType() == 'postgres' ? '/../sql/titlekey.pg.sql' : '/../sql/titlekey.sql';
-			$err = $db->sourceFile( __DIR__ . $sourceFile );
-			if ( $err !== true ) {
-				throw new Exception( $err );
-			}
-
-			$updater->output( "ok.\n" );
-		}
-	}
-
-	/**
-	 * Override the default OpenSearch backend...
-	 *
-	 * @param int[] $ns
-	 * @param string $search term
-	 * @param int $limit max number of items to return
-	 * @param array &$results out param -- list of title strings
-	 * @param int $offset number of items to offset
-	 * @return false
-	 */
-	public static function prefixSearchBackend( $ns, $search, $limit, &$results, $offset = 0 ) {
-		$results = self::prefixSearch( $ns, $search, $limit, $offset );
-		return false;
+		$path = dirname( __DIR__ ) . '/sql';
+		$updater->addExtensionTable(
+			'titlekey',
+			$db->getType() === 'postgres' ? "$path/titlekey.pg.sql" : "$path/titlekey.sql"
+		);
+		$updater->addPostDatabaseUpdateMaintenance( RebuildTitleKeys::class );
 	}
 
 	/**
@@ -214,9 +235,9 @@ class TitleKey {
 	 * @param string $search
 	 * @param int $limit
 	 * @param int $offset
-	 * @return string
+	 * @return Title[]
 	 */
-	private static function prefixSearch( $namespaces, $search, $limit, $offset ) {
+	public static function prefixSearch( $namespaces, $search, $limit, $offset ) {
 		// support only one namespace
 		$ns = array_shift( $namespaces );
 		if ( in_array( NS_MAIN, $namespaces ) ) {
@@ -226,7 +247,7 @@ class TitleKey {
 
 		$key = self::normalize( $search );
 
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
 		$result = $dbr->select(
 			[ 'titlekey', 'page' ],
 			[ 'page_namespace', 'page_title' ],
@@ -244,22 +265,20 @@ class TitleKey {
 		);
 
 		// Reformat useful data for future printing by JSON engine
-		$srchres = [];
+		$results = [];
 		foreach ( $result as $row ) {
-			$title = Title::makeTitle( $row->page_namespace, $row->page_title );
-			$srchres[] = $title->getPrefixedText();
+			$results[] = Title::makeTitle( $row->page_namespace, $row->page_title );
 		}
-		$result->free();
 
-		return $srchres;
+		return $results;
 	}
 
 	/**
 	 * Find matching titles after the default 'go' search exact match fails.
-	 * This'll let 'mcgee' match 'McGee' etc.
+	 * This will let 'mcgee' match 'McGee' etc.
 	 *
 	 * @param string $term
-	 * @param Title outparam &$title
+	 * @param Title &$title outparam
 	 * @return bool
 	 */
 	public static function searchGetNearMatch( $term, &$title ) {
@@ -286,14 +305,14 @@ class TitleKey {
 	}
 
 	/**
-	 * @param array $ns
+	 * @param int $ns
 	 * @param string $text
 	 * @return Title|null
 	 */
 	private static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
 
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
 		$row = $dbr->selectRow(
 			[ 'titlekey', 'page' ],
 			[ 'page_namespace', 'page_title' ],
@@ -307,8 +326,8 @@ class TitleKey {
 
 		if ( $row ) {
 			return Title::makeTitle( $row->page_namespace, $row->page_title );
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 }
