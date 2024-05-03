@@ -21,57 +21,53 @@
 
 namespace MediaWiki\Extension\TitleKey;
 
-use Content;
 use DatabaseUpdater;
 use ManualLogEntry;
 use MediaWiki\Hook\PageMoveCompletingHook;
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Page\Hook\ArticleDeleteCompleteHook;
-use MediaWiki\Page\Hook\ArticleDeleteHook;
-use MediaWiki\Page\Hook\ArticleUndeleteHook;
+use MediaWiki\Page\Hook\PageDeleteCompleteHook;
+use MediaWiki\Page\Hook\PageUndeleteCompleteHook;
+use MediaWiki\Page\ProperPageIdentity;
+use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionRecord;
-use MediaWiki\Status\Status;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\Title;
-use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use RebuildTitleKeys;
+use Wikimedia\Rdbms\IExpression;
+use Wikimedia\Rdbms\LikeValue;
 use WikiPage;
 
 class TitleKey implements
-	ArticleDeleteHook,
-	ArticleDeleteCompleteHook,
+	PageDeleteCompleteHook,
 	PageSaveCompleteHook,
-	ArticleUndeleteHook,
+	PageUndeleteCompleteHook,
 	PageMoveCompletingHook,
 	LoadExtensionSchemaUpdatesHook
 {
-
-	/** @var array */
-	private static $deleteIds = [];
 
 	/**
 	 * Active functions...
 	 *
 	 * @param int $id
 	 */
-	private static function deleteKey( $id ) {
-		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getPrimaryDatabase();
-		$dbw->delete(
-			'titlekey',
-			[ 'tk_page' => $id ],
-			__METHOD__
-		);
+	private function deleteKey( $id ) {
+		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
+		$dbw->newDeleteQueryBuilder()
+			->delete( 'titlekey' )
+			->where( [ 'tk_page' => $id ] )
+			->caller( __METHOD__ )
+			->execute();
 	}
 
 	/**
 	 * @param int $id
 	 * @param LinkTarget $title
 	 */
-	private static function setKey( $id, LinkTarget $title ) {
+	private function setKey( $id, LinkTarget $title ) {
 		self::setBatchKeys( [ $id => $title ] );
 	}
 
@@ -87,13 +83,15 @@ class TitleKey implements
 				'tk_key' => self::normalize( $title->getText() ),
 			];
 		}
-		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getPrimaryDatabase();
-		$dbw->replace(
-			'titlekey',
-			[ 'tk_page' ],
-			$rows,
-			__METHOD__
-		);
+		if ( !$rows ) {
+			return;
+		}
+		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase()
+			->newReplaceQueryBuilder()
+			->replaceInto( 'titlekey' )
+			->uniqueIndexFields( [ 'tk_page' ] )
+			->rows( $rows )
+			->caller( __METHOD__ )->execute();
 	}
 
 	/**
@@ -103,7 +101,8 @@ class TitleKey implements
 	 * @return string
 	 */
 	private static function normalize( $text ) {
-		return MediaWikiServices::getInstance()->getContentLanguage()->caseFold( $text );
+		$contentLanguage = MediaWikiServices::getInstance()->getContentLanguage();
+		return $contentLanguage->caseFold( $text );
 	}
 
 	// Hook functions....
@@ -120,50 +119,18 @@ class TitleKey implements
 	}
 
 	/**
-	 * @param WikiPage $wikiPage
-	 * @param User $user
-	 * @param string &$reason
-	 * @param string &$error
-	 * @param Status &$status
-	 * @param bool $suppress
-	 * @return bool
+	 * @inheritDoc
 	 */
-	public function onArticleDelete(
-		WikiPage $wikiPage,
-		User $user,
-		&$reason,
-		&$error,
-		Status &$status,
-		$suppress
+	public function onPageDeleteComplete(
+		ProperPageIdentity $page,
+		Authority $deleter,
+		string $reason,
+		int $pageID,
+		RevisionRecord $deletedRev,
+		ManualLogEntry $logEntry,
+		int $archivedRevisionCount
 	) {
-		$title = $wikiPage->getTitle()->getPrefixedText();
-		self::$deleteIds[$title] = $wikiPage->getID();
-		return true;
-	}
-
-	/**
-	 * @param WikiPage $wikiPage
-	 * @param User $user
-	 * @param string $reason
-	 * @param int $id
-	 * @param Content|null $content
-	 * @param ManualLogEntry $logEntry
-	 * @param int $archivedRevisionCount
-	 * @return bool
-	 */
-	public function onArticleDeleteComplete(
-		$wikiPage,
-		$user,
-		$reason,
-		$id,
-		$content,
-		$logEntry,
-		$archivedRevisionCount
-	) {
-		$title = $wikiPage->getTitle()->getPrefixedText();
-		if ( isset( self::$deleteIds[$title] ) ) {
-			self::deleteKey( self::$deleteIds[$title] );
-		}
+		$this->deleteKey( $pageID );
 		return true;
 	}
 
@@ -177,7 +144,7 @@ class TitleKey implements
 	 * @return bool|void
 	 */
 	public function onPageSaveComplete( $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult ) {
-		self::setKey( $wikiPage->getId(), $wikiPage->getTitle() );
+		$this->setKey( $wikiPage->getId(), $wikiPage->getTitle() );
 		return true;
 	}
 
@@ -192,23 +159,26 @@ class TitleKey implements
 	 * @return bool
 	 */
 	public function onPageMoveCompleting( $old, $new, $user, $pageid, $redirid, $reason, $revision ) {
-		self::setKey( $pageid, $old );
-		self::setKey( $redirid, $new );
+		$this->setKey( $pageid, $old );
+		$this->setKey( $redirid, $new );
 		return true;
 	}
 
 	/**
-	 * @param Title $title
-	 * @param bool $create
-	 * @param string $comment
-	 * @param int $oldPageId
-	 * @param array $restoredPages
-	 * @return bool
+	 * @inheritDoc
 	 */
-	public function onArticleUndelete( $title, $create, $comment, $oldPageId, $restoredPages ) {
-		$id = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title )->getID();
-		self::setKey( $id, $title );
-		return true;
+	public function onPageUndeleteComplete(
+		ProperPageIdentity $page,
+		Authority $restorer,
+		string $reason,
+		RevisionRecord $restoredRev,
+		ManualLogEntry $logEntry,
+		int $restoredRevisionCount,
+		bool $created,
+		array $restoredPageIds
+	): void {
+		$id = $page->getId();
+		$this->setKey( $id, Title::newFromPageIdentity( $page ) );
 	}
 
 	/**
@@ -247,22 +217,20 @@ class TitleKey implements
 
 		$key = self::normalize( $search );
 
-		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getReplicaDatabase();
-		$result = $dbr->select(
-			[ 'titlekey', 'page' ],
-			[ 'page_namespace', 'page_title' ],
-			[
-				'tk_page = page_id',
+		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
+		$result = $dbr->newSelectQueryBuilder()
+			->select( [ 'page_namespace', 'page_title' ] )
+			->from( 'page' )
+			->join( 'titlekey', null, 'tk_page=page_id' )
+			->where( [
 				'tk_namespace' => $ns,
-				'tk_key ' . $dbr->buildLike( $key, $dbr->anyString() ),
-			],
-			__METHOD__,
-			[
-				'ORDER BY' => 'tk_key',
-				'LIMIT' => $limit,
-				'OFFSET' => $offset,
-			]
-		);
+				$dbr->expr( 'tk_key', IExpression::LIKE, new LikeValue( $key, $dbr->anyString() ) ),
+			] )
+			->orderBy( 'tk_key' )
+			->limit( $limit )
+			->offset( $offset )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		// Reformat useful data for future printing by JSON engine
 		$results = [];
@@ -312,17 +280,17 @@ class TitleKey implements
 	private static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
 
-		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getReplicaDatabase();
-		$row = $dbr->selectRow(
-			[ 'titlekey', 'page' ],
-			[ 'page_namespace', 'page_title' ],
-			[
-				'tk_page = page_id',
+		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
+		$row = $dbr->newSelectQueryBuilder()
+			->select( [ 'page_namespace', 'page_title' ] )
+			->from( 'page' )
+			->join( 'titlekey', null, 'tk_page=page_id' )
+			->where( [
 				'tk_namespace' => $ns,
 				'tk_key' => $key,
-			],
-			__METHOD__
-		);
+			] )
+			->caller( __METHOD__ )
+			->fetchRow();
 
 		if ( $row ) {
 			return Title::makeTitle( $row->page_namespace, $row->page_title );

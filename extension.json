@@ -10,7 +10,7 @@
 	"descriptionmsg": "titlekey-desc",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.39"
+		"MediaWiki": ">= 1.42"
 	},
 	"MessagesDirs": {
 		"TitleKey": [
@@ -32,16 +32,13 @@
 		}
 	},
 	"Hooks": {
-		"ArticleDelete": {
-			"handler": "TitleKeyHooks"
-		},
-		"ArticleDeleteComplete": {
+		"PageDeleteComplete": {
 			"handler": "TitleKeyHooks"
 		},
 		"PageSaveComplete": {
 			"handler": "TitleKeyHooks"
 		},
-		"ArticleUndelete": {
+		"PageUndeleteComplete": {
 			"handler": "TitleKeyHooks"
 		},
 		"PageMoveCompleting": {
