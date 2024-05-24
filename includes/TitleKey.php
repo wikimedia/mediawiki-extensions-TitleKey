@@ -59,7 +59,7 @@ class TitleKey implements
 	 * @param int $id
 	 */
 	private static function deleteKey( $id ) {
-		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
+		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getPrimaryDatabase();
 		$dbw->delete(
 			'titlekey',
 			[ 'tk_page' => $id ],
@@ -87,7 +87,7 @@ class TitleKey implements
 				'tk_key' => self::normalize( $title->getText() ),
 			];
 		}
-		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
+		$dbw = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getPrimaryDatabase();
 		$dbw->replace(
 			'titlekey',
 			[ 'tk_page' ],
@@ -247,7 +247,7 @@ class TitleKey implements
 
 		$key = self::normalize( $search );
 
-		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getReplicaDatabase();
 		$result = $dbr->select(
 			[ 'titlekey', 'page' ],
 			[ 'page_namespace', 'page_title' ],
@@ -312,7 +312,7 @@ class TitleKey implements
 	private static function exactMatch( $ns, $text ) {
 		$key = self::normalize( $text );
 
-		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getReplicaDatabase();
 		$row = $dbr->selectRow(
 			[ 'titlekey', 'page' ],
 			[ 'page_namespace', 'page_title' ],
