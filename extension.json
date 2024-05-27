@@ -51,5 +51,19 @@
 			"handler": "TitleKeyHooks"
 		}
 	},
+	"SearchMappings": {
+		"TitleKey": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEngineMySQL"
+		},
+		"TitleKeyMySQL": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEngineMySQL"
+		},
+		"TitleKeyPostgres": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEnginePostgres"
+		},
+		"TitleKeySqlite": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEngineSqlite"
+		}
+	},
 	"manifest_version": 2
 }
