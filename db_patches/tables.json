@@ -1,0 +1,29 @@
+[
+	{
+		"name": "titlekey",
+		"columns": [
+			{
+				"name": "tk_page",
+				"comment": "Ref to page_id",
+				"type": "integer",
+				"options": { "unsigned": true, "notnull": true }
+			},
+			{
+				"name": "tk_namespace",
+				"comment": "Keep a denormalized copy of the namespace for filtering",
+				"type": "integer",
+				"options": { "unsigned": false, "notnull": true }
+			},
+			{
+				"name": "tk_key",
+				"comment": "Normalized title. With namespace prefix, case-folded, in space form.",
+				"type": "binary",
+				"options": { "length": 255, "notnull": true }
+			}
+		],
+		"indexes": [
+			{ "name": "name_key", "columns": [ "tk_namespace", "tk_key" ], "unique": false }
+		],
+		"pk": [ "tk_page" ]
+	}
+]

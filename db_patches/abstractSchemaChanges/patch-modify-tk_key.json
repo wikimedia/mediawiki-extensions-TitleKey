@@ -1,0 +1,51 @@
+{
+	"comment": "Change tk_key from VARCHAR binary to VARBINARY (MySQL-only).",
+	"before": {
+		"name": "titlekey",
+		"columns": [
+			{
+				"name": "tk_page",
+				"type": "integer",
+				"options": { "unsigned": true, "notnull": true }
+			},
+			{
+				"name": "tk_namespace",
+				"type": "integer",
+				"options": { "unsigned": false, "notnull": true }
+			},
+			{
+				"name": "tk_key",
+				"type": "string",
+				"options": { "length": 255, "notnull": true }
+			}
+		],
+		"indexes": [
+			{ "name": "name_key", "columns": [ "tk_namespace", "tk_key" ], "unique": false }
+		],
+		"pk": [ "tk_page" ]
+	},
+	"after": {
+		"name": "titlekey",
+		"columns": [
+			{
+				"name": "tk_page",
+				"type": "integer",
+				"options": { "unsigned": true, "notnull": true }
+			},
+			{
+				"name": "tk_namespace",
+				"type": "integer",
+				"options": { "unsigned": false, "notnull": true }
+			},
+			{
+				"name": "tk_key",
+				"type": "binary",
+				"options": { "length": 255, "notnull": true }
+			}
+		],
+		"indexes": [
+			{ "name": "name_key", "columns": [ "tk_namespace", "tk_key" ], "unique": false }
+		],
+		"pk": [ "tk_page" ]
+	}
+}
