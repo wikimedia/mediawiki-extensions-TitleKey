@@ -1,7 +1,6 @@
 <?php
 
 use MediaWiki\Extension\TitleKey\TitleKey;
-use MediaWiki\MediaWikiServices;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -22,27 +21,27 @@ class RebuildTitleKeys extends Maintenance {
 	public function execute() {
 		$start = $this->getOption( 'start', 0 );
 		$this->output( "Rebuilding titlekey table...\n" );
-		$dbr = $this->getDB( DB_REPLICA );
+		$dbr = $this->getServiceContainer()->getConnectionProvider()->getReplicaDatabase();
 
-		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-
-		$maxId = $dbr->selectField( 'page', 'MAX(page_id)', '', __METHOD__ );
+		$maxId = $dbr->newSelectQueryBuilder()
+			->select( 'MAX(page_id)' )
+			->from( 'page' )
+			->caller( __METHOD__ )
+			->fetchField();
 
 		$lastId = 0;
 		for ( ; $start <= $maxId; $start += $this->mBatchSize ) {
 			if ( $start != 0 ) {
 				$this->output( "... $start...\n" );
 			}
-			$result = $dbr->select(
-				'page',
-				[ 'page_id', 'page_namespace', 'page_title' ],
-				[ 'page_id > ' . intval( $start ) ],
-				__METHOD__,
-				[
-					'ORDER BY' => 'page_id',
-					'LIMIT' => $this->mBatchSize
-				]
-			);
+			$result = $dbr->newSelectQueryBuilder()
+				->select( [ 'page_id', 'page_namespace', 'page_title' ] )
+				->from( 'page' )
+				->where( $dbr->expr( 'page_id', '>', intval( $start ) ) )
+				->orderBy( 'page_id' )
+				->limit( $this->mBatchSize )
+				->caller( __METHOD__ )
+				->fetchResultSet();
 
 			$titles = [];
 			foreach ( $result as $row ) {
@@ -53,8 +52,7 @@ class RebuildTitleKeys extends Maintenance {
 			$result->free();
 
 			TitleKey::setBatchKeys( $titles );
-
-			$lbFactory->waitForReplication( [ 'ifWritesSince' => 20 ] );
+			$this->waitForReplication();
 		}
 
 		if ( $lastId ) {
