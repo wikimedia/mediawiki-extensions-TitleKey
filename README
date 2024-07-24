@@ -22,7 +22,7 @@ To enable the extension, add the following line to your LocalSettings.php file:
   wfLoadExtension( 'TitleKey' );
 
 
- * Set $wgSearchType to 'MediaWiki\\Extension\\TitleKey\\SearchEngine'
+ * Set $wgSearchType to 'TitleKeyMySQL', 'TitleKeyPostgres' or 'TitleKeySqlite'
 
 You must then create and populate the new database table.
 
