@@ -26,12 +26,14 @@ use ManualLogEntry;
 use MediaWiki\Hook\PageMoveCompletingHook;
 use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
 use MediaWiki\Linker\LinkTarget;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\Hook\PageUndeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Settings\SettingsBuilder;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\Title;
@@ -48,6 +50,22 @@ class TitleKey implements
 	PageMoveCompletingHook,
 	LoadExtensionSchemaUpdatesHook
 {
+
+	/**
+	 * Set $wgSearchType to one of TitleKey's classes.
+	 * @param mixed[] $schema Extension info (a subset of extension.json).
+	 * @param SettingsBuilder $settingsBuilder
+	 */
+	public static function onRegistration( array $schema, SettingsBuilder $settingsBuilder ): void {
+		$dbType = $settingsBuilder->getConfig()->get( 'DBtype' );
+		$classNameSuffix = $dbType === 'mysql' ? 'MySQL' : ucfirst( $dbType );
+		$className = 'MediaWiki\\Extension\\TitleKey\\SearchEngine' . $classNameSuffix;
+		if ( !class_exists( $className ) ) {
+			// This should never happen because all three DB types are supported by TitleKey.
+			return;
+		}
+		$settingsBuilder->overrideConfigValue( MainConfigNames::SearchType, $className );
+	}
 
 	/**
 	 * Active functions...
