@@ -57,7 +57,7 @@ class TitleKey implements
 	 * @param SettingsBuilder $settingsBuilder
 	 */
 	public static function onRegistration( array $schema, SettingsBuilder $settingsBuilder ): void {
-		$dbType = $settingsBuilder->getConfig()->get( 'DBtype' );
+		$dbType = strtolower( $settingsBuilder->getConfig()->get( 'DBtype' ) );
 		$classNameSuffix = $dbType === 'mysql' ? 'MySQL' : ucfirst( $dbType );
 		$className = 'MediaWiki\\Extension\\TitleKey\\SearchEngine' . $classNameSuffix;
 		if ( !class_exists( $className ) ) {
