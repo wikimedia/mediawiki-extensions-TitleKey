@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\Extension\TitleKey\TitleKey;
+use MediaWiki\Title\Title;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
