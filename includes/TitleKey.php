@@ -104,7 +104,7 @@ class TitleKey implements
 		if ( !$rows ) {
 			return;
 		}
-		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase()
+		MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase()
 			->newReplaceQueryBuilder()
 			->replaceInto( 'titlekey' )
 			->uniqueIndexFields( [ 'tk_page' ] )
